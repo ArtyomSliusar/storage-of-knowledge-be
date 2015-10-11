@@ -1,0 +1,189 @@
+@font-face {
+    font-family: 'Shift';
+    font-style: normal;
+    font-weight: normal;
+    src: url("http://s3.amazonaws.com/codecademy-content/courses/ltp/fonts/shift.woff") format("woff");
+}
+@font-face {
+    font-family: 'Shift';
+    font-style: normal;
+    font-weight: bold;
+    src: url("http://s3.amazonaws.com/codecademy-content/courses/ltp/fonts/shift-bold.woff") format("woff");
+}
+
+html{
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
+}
+
+.messages {
+    width:100%;
+    min-height:100%;
+    background-color: rgba(0,0,0,0.5);
+    overflow:hidden;
+    position:fixed;
+    top:0;
+    z-index:2000;
+}
+
+.b-popup-content p {
+    font-family: 'Shift', sans-serif;
+    color: rgb(3, 3, 1);
+    font-size: 20px;
+    text-align: center;
+}
+
+.b-popup-content {
+    margin:40px auto 0 auto;
+    width:350px;
+    height: auto;
+    padding: 30px;
+    background-color: #c5c5c5;
+    border-radius:5px;
+    box-shadow: 0 0 10px #000;
+    word-wrap: break-word;
+}
+
+.nav {
+    background-color: #efefef;
+    padding-top: 10px;
+    padding-bottom: 6px;
+}
+
+.icon-courses {
+    display: inline;
+    margin-left: 80px;
+}
+
+.icon-courses button {
+    cursor: pointer;
+}
+
+.nav li {
+    display: inline;
+    color: #1e5aff;
+    font-size: 15px;
+    font-weight: bold;
+    margin-right: 20px;
+    text-transform: uppercase;
+}
+
+/* Initial menu */
+.courses {
+    background: #202024 url('http://s3.amazonaws.com/codecademy-content/courses/ltp2/img/uber/black-thread.png') repeat left top;
+    left: -285px;  /* start off behind the scenes */
+    height: 84%;
+    position: fixed;
+    width: 285px;
+    overflow-y: auto;
+}
+
+.courses li {
+    border-bottom: 1px solid #636366;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 45px;
+    padding-bottom: 3px;
+    padding-left: 20px;
+    padding-top: 3px;
+}
+
+.courses ul {
+    border-top: 1px solid #636366;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.courses a {
+    color: #fff;
+    font-size: 15px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.courses a:hover {
+    text-decoration: underline !important;
+}
+
+.jumbotron {
+    background-image:url('https://mrcallens.files.wordpress.com/2013/08/lost-book.jpg?w=1278&h=500&crop=1');
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    height: 84%;
+    width: 100%;
+    background-repeat: no-repeat;
+    position: absolute;
+    left: 0;
+}
+
+.jumbotron .container {
+    position: absolute;
+    top:135px;
+    margin-left: 80px;
+}
+
+.jumbotron h1 {
+    color: #030301;
+    font-size: 48px;
+    font-family: 'Shift', sans-serif;
+    font-weight: bold;
+}
+
+.jumbotron p {
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.jumbotron a {
+    color: #1e5aff;
+    font-weight: bold;
+}
+/*
+.learn-more {
+    background-color: #f7f7f7;
+}
+
+.learn-more h3 {
+    font-family: 'Shift', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.learn-more a {
+    color: #00b0ff;
+}
+*/
+.footer_main {
+    background-color: #efefef;
+    position: absolute;
+    bottom: 0;
+    height: 10%;
+    width: 100%;
+}
+
+.footer_slide {
+    background-color: inherit;
+    width: inherit;
+    padding-left: 80px;
+    padding-right: 40px;
+}
+
+.footer_slide h2 {
+    color: #393c3d;
+    margin-top: 8px;
+    font-size: 20px;
+    font-family: 'Shift', sans-serif;
+}
+
+.footer_slide p {
+    font-size: 15px;
+    margin-bottom: 13px;
+}

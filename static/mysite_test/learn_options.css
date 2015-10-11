@@ -1,0 +1,144 @@
+@font-face {
+    font-family: 'Shift';
+    font-style: normal;
+    font-weight: normal;
+    src: url("http://s3.amazonaws.com/codecademy-content/courses/ltp/fonts/shift.woff") format("woff");
+}
+@font-face {
+    font-family: 'Shift';
+    font-style: normal;
+    font-weight: bold;
+    src: url("http://s3.amazonaws.com/codecademy-content/courses/ltp/fonts/shift-bold.woff") format("woff");
+}
+
+.nav {
+    background-color: #efefef;
+    padding-top: 10px;
+    padding-bottom: 6px;
+    position: fixed;
+    width: 100%;
+    z-index:2000;
+}
+
+.nav li {
+    display: inline;
+    color: #1e5aff;
+    font-size: 15px;
+    font-weight: bold;
+    margin-right: 20px;
+    text-transform: uppercase;
+}
+
+.container h2 {
+    font-size: 20px;
+}
+
+.things-to-learn h1 {
+    text-align: center;
+    margin-top: 70px;
+    margin-bottom: 30px;
+}
+
+.check_skills h1 {
+    text-align: center;
+    margin-top: 70px;
+    margin-bottom: 30px;
+}
+
+.check_skills li {
+    font-size: 15px;
+}
+
+.personal_notes h1 {
+    text-align: center;
+    margin-top: 70px;
+    margin-bottom: 30px;
+}
+
+.personal_notes img {
+    float: right;
+}
+
+.thumbnail {
+    position: relative;
+    text-align: center;
+}
+
+.thumbnail image {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.thumbnail p {
+    z-index: 100;
+    position: absolute;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Shift', sans-serif;;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
+.learn-more .col-md-4 {
+    margin-bottom: 50px;
+}
+
+.slide {
+    display: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.active-slide {
+    display: block;
+}
+
+.slider-nav {
+    text-align: center;
+    margin-top: 20px;
+    position: fixed;
+    width: 100%;
+    height: 50px;
+    bottom: 0;
+    background-color: #efefef;
+    z-index:2000;
+}
+
+.arrow-prev {
+    margin-right: 45px;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 9px;
+}
+
+.arrow-next {
+    margin-left: 45px;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 9px;
+}
+
+.slider-dots {
+    list-style: none;
+    display: inline-block;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.slider-dots li {
+    color: #bbbcbc;
+    display: inline;
+    font-size: 30px;
+    margin-right: 5px;
+}
+
+.slider-dots li.active-dot {
+    color: #363636;
+}

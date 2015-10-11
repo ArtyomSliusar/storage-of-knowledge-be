@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'mysite_test/learn_options.css' %}">
+  </head>
+
+  <body>
+
+    <div class="nav">
+      <ul class="pull-left">
+        <li><a href="{% url 'home' %}">Home</a></li>
+      </ul>
+      <ul class="pull-right">
+        <li><a href="#">Sign Up</a></li>
+        <li><a href="#">Log In</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="slider">
+
+        <div class="slide active-slide">
+            <div class="things-to-learn">
+              <div class="container">
+                <h1>Common knowledge</h1>
+                <div class="row">
+
+                  <div class="col-md-4">
+                    <a href="http://brainden.com/logic-problems.htm" class="thumbnail">
+                      <img src="http://www.barrett.com.au/blogs/SalesBlog/wp-content/uploads/2013/04/customer-relationship.png">
+                      <p>Logic</p>
+                    </a>
+                    <a href="https://www.khanacademy.org/computing/computer-science/algorithms" class="thumbnail">
+                      <img src="http://3.imimg.com/data3/YG/XJ/MY-11633919/media-577996-developed-pos-predictive-model-and-application-using-microsoft-bi-and-ai-algorithms-500x500.png">
+                      <p>Algorithms</p>
+                    </a>
+                    <a href="https://www.djangoproject.com/" class="thumbnail">
+                      <img src="http://justwebframeworks.com/wp-content/uploads/2014/07/django.jpg">
+                    </a>
+                    <a href="http://design-pattern.ru/" class="thumbnail">
+                      <img src="http://www.noupe.com/wp-content/uploads/2009/10/pattern-03.jpg">
+                      <p>Design patterns</p>
+                    </a>
+                  </div>
+
+                  <div class="col-md-4">
+                    <a href="http://docs.python-guide.org/en/latest/" class="thumbnail">
+                      <img src="http://cfs22.simplicdn.net/ice9/free_resources_article_thumb/simplilearn-computer-programming-languages-python.jpg">
+                    </a>
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" class="thumbnail">
+                      <img src="http://osdelivers.blackducksoftware.com/wp-content/uploads/2013/11/JavaScript-cover-image.jpg">
+                      <p>Javascript</p>
+                    </a>
+                    <a href="https://www.mongodb.org/?_ga=1.141122930.1997465959.1439322839" class="thumbnail">
+                      <img src="http://3.imimg.com/data3/QA/VJ/MY-11156819/mongo-db-500x500.png">
+                    </a>
+                    <a href="http://www.w3schools.com/sql/" class="thumbnail">
+                      <img src="http://teknika.com.pk/wp-content/uploads/2013/11/t2.jpg">
+                      <p>Sql</p>
+                    </a>
+                  </div>
+
+                  <div class="col-md-4">
+                    <a href="http://www.w3schools.com/html/" class="thumbnail">
+                        <img src="http://webmastermix.ru/images/creation-site/lessons-html/html5/html5.png">
+                    </a>
+                    <a href="http://www.w3schools.com/css/" class="thumbnail">
+                        <img src="http://www.ixwebhosting.com/support/wp-content/uploads/2013/11/css3.jpg">
+                    </a>
+                    <a href="https://jquery.com/" class="thumbnail">
+                        <img src="http://static1.squarespace.com/static/5323bd67e4b05fc1fc6e205c/5323c782e4b0137cd27ce694/5323cf1be4b055350d922927/1394865614662/jquery+logo+(remove+writeless,+do+more).png?format=500w">
+                    </a>
+                    <a href="https://git-scm.com/" class="thumbnail">
+                        <img src="http://41.media.tumblr.com/75df6cea4630b1251c542d77bf0936e1/tumblr_ntfxu8DU7S1unqecoo1_500.jpg">
+                    </a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="learn-more">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-4">
+                    <h3>Design pattern</h3>
+                    <p>Is a general reusable solution to a commonly occurring problem within a given context in software design.
+                        It is a description or template for how to solve a problem that can be used in many different situations.</p>
+                    <p><a href="https://en.wikipedia.org/wiki/Software_design_pattern">Read more about design patterns</a></p>
+                  </div>
+                  <div class="col-md-4">
+                    <h3>Algorithm</h3>
+                    <p>An informal definition could be "a set of rules that precisely defines a sequence of operations."
+                        which would include all computer programs, including programs that do not perform numeric calculations.
+                        Generally, a program is only an algorithm if it stops eventually.</p>
+                    <p><a href="https://en.wikipedia.org/wiki/Algorithm">Read more about algorithms</a></p>
+                  </div>
+                  <div class="col-md-4">
+                    <h3>Web framework</h3>
+                    <p>Is a software framework that is designed to support the development of dynamic websites, web applications,
+                        web services and web resources. The framework aims to alleviate the overhead associated with common
+                        activities performed in web development.</p>
+                    <p><a href="https://en.wikipedia.org/wiki/Web_application_framework">Learn more about web frameworks</a></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="check_skills">
+                <div class="container">
+                    <h1>Check your skills</h1>
+                    <div class="row">
+                        <div class="col-xs-5">
+                            <h2>Skills test is essential part of educational process.</h2>
+                            <p>Find out what you are capable of with one of these quizzes:</p>
+                            <ul>
+                                <li><a href="http://www.mypythonquiz.com/">Python</a></li>
+                                <li><a href="http://www.w3schools.com/js/js_quiz.asp">Javascript</a></li>
+                                <li><a href="http://www.tutorialspoint.com/mongodb/mongodb_online_quiz.htm">MongoDB</a></li>
+                                <li><a href="http://www.w3schools.com/sql/sql_quiz.asp">Sql</a></li>
+                                <li><a href="http://www.w3schools.com/html/html_quiz.asp">Html</a></li>
+                                <li><a href="http://www.w3schools.com/css/css_quiz.asp">Css</a></li>
+                                <li><a href="http://www.codequizzes.com/git-github/methods-init-add-status">Git</a></li>
+                                <li><a href="http://www.w3schools.com/jquery/jquery_quiz.asp">Jquery</a></li>
+                            </ul>
+                        </div>
+                        <div class="slide-img col-xs-7">
+                            <img src="http://www.skillsgarage.net/wp-content/uploads/2014/12/plan-do-check-act.jpg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="personal_notes">
+                <div class="container">
+                    <h1>Personal notes</h1>
+                    <h2>It is always a good idea to make notes when you are studying. Store your notes remotely and they will
+                        be available anytime and anywhere.</h2>
+                    <div>
+                        <img src="http://www.elanorahts-p.schools.nsw.edu.au/documents/24059411/24066464/notes.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="slider-nav">
+        <a href="#" class="arrow-prev"><img src="http://www.azay.es/bundles/frontend/images/arrow-prev.png"></a>
+        <ul class="slider-dots">
+            <li class="dot active-dot">&bull;</li>
+            <li class="dot">&bull;</li>
+            <li class="dot">&bull;</li>
+        </ul>
+        <a href="#" class="arrow-next"><img src="http://www.azay.es/bundles/frontend/images/arrow-next.png"></a>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="{% static 'mysite_test/learn_options.js' %}"></script>
+  </body>
+</html>

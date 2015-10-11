@@ -1,0 +1,19 @@
+/* Initial body */
+.menu {
+  
+  height: 100%;
+  width: 500px;
+  background-color: #3366CC;
+  margin:50px;
+  position: relative
+}
+
+
+.ooo {
+  width:100px;
+  height:100%;
+  background: #f0f0f0;
+  position: absolute;
+
+  
+}
