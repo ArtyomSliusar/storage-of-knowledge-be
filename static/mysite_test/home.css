@@ -67,7 +67,7 @@ body {
 
 .nav li {
     display: inline;
-    color: #1e5aff;
+    color: #030103;
     font-size: 15px;
     font-weight: bold;
     margin-right: 20px;
@@ -112,7 +112,7 @@ body {
 }
 
 .jumbotron {
-    background-image:url('https://mrcallens.files.wordpress.com/2013/08/lost-book.jpg?w=1278&h=500&crop=1');
+    /*background-image: url('https://mrcallens.files.wordpress.com/2013/08/lost-book.jpg?w=1278&h=500&crop=1');*/
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -122,6 +122,14 @@ body {
     background-repeat: no-repeat;
     position: absolute;
     left: 0;
+}
+
+.jumbotron img {
+    position:absolute;
+    left:0;
+    top:0;
+    height: 100%;
+    width: 100%;
 }
 
 .jumbotron .container {

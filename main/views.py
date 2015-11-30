@@ -1,17 +1,21 @@
 from django.db.models import Q
 from django.shortcuts import render_to_response
-from books.models import Book
-from books.forms import ContactForm, PublisherForm, UserForm
+from books.models import Book, Post
+from books.forms import ContactForm, PublisherForm, UserForm, PostForm
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from main import settings
+from django.core.urlresolvers import reverse
+from django.contrib.auth.views import password_reset, password_reset_confirm
+import json
 
 
 def search(request):
-    query = request.GET('q', '')
+    query = request.GET.get('q', '')
     if query:
         qset = (
         Q(title__icontains=query) |
@@ -24,12 +28,45 @@ def search(request):
     return render_to_response("books/search.html", {"results": results, "query": query})
 
 
+def search_posts(request):
+    # q_subject = request.GET.get('subject', '')
+    # q_topic = request.GET.get('topic', '')
+    form = PostForm(request.POST)
+    if form.is_valid():
+        pass
+
+
+
+    return render_to_response("posts/search_posts.html", RequestContext(request))
+
+
 def get_home(request):
-    return render_to_response("home/index.html", context_instance=RequestContext(request))
+    return render_to_response("home/index.html", RequestContext(request))
 
 
-def show_options(request):
-    return render_to_response("learn_options/learn_options.html")
+def learn_options(request):
+    form = PostForm()
+    return render_to_response("learn_options/learn_options.html", {'form': form}, RequestContext(request))
+
+
+def get_topics(request):
+    if request.is_ajax():
+        query = request.GET.get('term', '')
+        qset = (Q(topic__icontains=query))
+        extra_param = request.GET.get('subject', '')
+        if extra_param:
+            qset.add(Q(subject=extra_param), Q.AND)
+        posts = Post.objects.filter(qset)[:20]
+        results = []
+        for post in posts:
+            results.append(post.topic)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
 
 
 # def current_datetime(request):
@@ -37,24 +74,50 @@ def show_options(request):
 #     return render_to_response("datetime/current_datetime.html", {'current_date': now})
 
 
-def user_login(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(username=username, password=password)
-    # if user is not None:
-    #     if user.is_active:
-    #         login(request, user)
-    #         # Redirect to a success page.
-    #     else:
-    #         # Return a 'disabled account' error message
-    #         ...
-    # else:
-    #     # Return an 'invalid login' error message.
-    #     ...
+# def user_login(request):
+#     redirect_to = request.REQUEST.get('next', '/home/')
+#     if request.method == "POST":
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(username=username, password=password)
+#
+#         if user is not None:
+#             if user.is_active:
+#                 login(request, user)
+#                 return HttpResponseRedirect(redirect_to, RequestContext(request))
+#             else:
+#                 HttpResponse("Inactive user.")
+#         else:
+#             return HttpResponseRedirect(settings.LOGIN_URL)
+#     return render_to_response('login/login.html', {'redirect_to': redirect_to}, RequestContext(request))
+
+
+def reset_password(request):
+    return password_reset(request, template_name='login/password_reset_form.html',
+                          email_template_name='login/password_reset_email.html',
+                          subject_template_name='login/password_reset_subject.txt',
+                          post_reset_redirect=reverse('reset_password_done'))
+
+
+def reset_password_done(request):
+    messages.info(request, "Email is sent.")
+    messages.info(request, "Please, check your email box.")
+    return HttpResponseRedirect('/home/', RequestContext(request))
+
+
+def reset_password_confirm(request, uidb64=None, token=None):
+    return password_reset_confirm(request, template_name='login/password_reset_confirm.html', uidb64=uidb64,
+                                  token=token, post_reset_redirect=reverse('login'))
+
+
+def user_logout(request):
+    redirect_to = request.REQUEST.get('next', '/home/')
+    logout(request)
+    return HttpResponseRedirect(redirect_to, RequestContext(request))
 
 
 def register(request):
-    redirect_to = request.REQUEST.get('next', '')
+    redirect_to = request.REQUEST.get('next', '/home/')
     if request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
@@ -62,49 +125,17 @@ def register(request):
             new_user.save()
             username = request.POST['username']
             password = request.POST['password']
-            new_user = authenticate(username=username,
-                                    password=password)
+            new_user = authenticate(username=username, password=password)
             login(request, new_user)
             messages.info(request, "Thanks for registration.")
             messages.info(request, "User '{}' is logged in.".format(username))
             return HttpResponseRedirect(redirect_to, RequestContext(request))
-            #new_user.backend = 'django.contrib.auth.backends.ModelBackend'
-
-            # redirect, or however you want to get to the main view
-            #return render_to_response('home/index.html')
         else:
             print form.errors
     else:
         form = UserForm()
 
-    return render_to_response('register/register.html', {'form': form}, RequestContext(request))
-
-
-
-
-
-
-
-    # if request.method == 'POST':
-    #     user_name = request.REQUEST.get('username', None)
-    #     user_pass = request.REQUEST.get('password', None)
-    #     user_mail = request.REQUEST.get('email', None)
-    #
-    #     # TODO: check if already existed
-    #     if user_name and user_pass and user_mail:
-    #         new_user = User.objects.register(user_name, user_mail, user_pass)
-    #     #    if created:
-    #     #       # user was created
-    #     #       # set the password here
-    #     #    else:
-    #     #       # user was retrieved
-    #     # else:
-    #     #    # request was empty
-    #         new_user.save()
-    #     return render_to_response('home/index.html')
-    # else:
-    #     form = CreateUserForm()
-    # return render_to_response('register/register.html', {'form': form}, RequestContext(request))
+    return render_to_response('register/register.html', {'form': form, 'redirect_to': redirect_to}, RequestContext(request))
 
 
 # def hours_ahead(request, offset):
@@ -128,11 +159,16 @@ def contact(request):
             return HttpResponseRedirect('thanks')
     else:
         form = ContactForm()
-    return render_to_response('contact/register.html', {'form': form}, RequestContext(request))
+    return render_to_response('contact/contact.html', {'form': form}, RequestContext(request))
 
 
 def thanks(request):
     return render_to_response('common/thanks.html')
+
+
+# def show_posts():
+#     form = PostForm()
+#     return form
 
 
 def add_publisher(request):

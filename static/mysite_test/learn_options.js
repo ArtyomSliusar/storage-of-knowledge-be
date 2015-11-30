@@ -1,4 +1,5 @@
-var main = function() {
+
+var change_page = function() {
 
     $('.arrow-next').click(function () {
         var currentSlide = $('.active-slide');
@@ -35,6 +36,54 @@ var main = function() {
         currentDot.removeClass('active-dot');
         prevDot.addClass('active-dot');
     });
+};
+
+var close_message = function(){
+    $('.messages').click(function(){
+        $('.messages').remove();
+    });
+};
+
+
+var topic_autocompletion = function() {
+  $("#id_topic").autocomplete({
+    source: function(request, response) {
+            $.ajax({
+                url: "/api/get_topics/",
+                dataType: "json",
+                data: {
+                    term : request.term,
+                    subject : $("#id_subject").val()
+                },
+                success: function(data) {
+                    response(data);
+                }
+            });
+        },
+    minLength: 2,
+  });
+};
+
+
+//var times = 0;
+//function add_page_history() {
+//    times++;
+//    location.hash = times;
+//}
+//
+//window.onhashchange = function() {
+//    if (location.hash.length > 0) {
+//        times = parseInt(location.hash.replace('#',''),10);
+//    } else {
+//        times = 0;
+//    }
+//};
+
+
+var main = function() {
+    change_page();
+    close_message();
+    topic_autocompletion();
 };
 
 

@@ -9,7 +9,6 @@
 
   <body>
 
-
     {% if messages %}
     <div class="messages">
         <div class="b-popup-content">
@@ -20,14 +19,18 @@
     </div>
     {% endif %}
 
-
     <div class="nav">
       <div class="icon-courses">
           <button type="button" class="btn btn-primary btn-sm">Courses</button>
       </div>
       <ul class="pull-right">
-        <li><a href="{% url 'register' %}?next={{request.path}}">Sign Up</a></li>
-        <li><a href="#">Log In</a></li>
+        {% if request.user.is_authenticated %}
+            <li>{{request.user.username}}</li>
+            <li><a href="{% url 'logout' %}?next={{request.path}}">Log Out</a></li>
+        {% else %}
+            <li><a href="{% url 'register' %}?next={{request.path}}">Sign Up</a></li>
+            <li><a href="{% url 'login' %}?next={{request.path}}">Log In</a></li>
+        {% endif %}
         <li><a href="#">Contact</a></li>
       </ul>
     </div>
@@ -48,6 +51,7 @@
     </div>
 
     <div class="jumbotron">
+      <img src="https://mrcallens.files.wordpress.com/2013/08/lost-book.jpg?w=1278&h=500&crop=1" alt="Image not found" onError="this.onerror=null;this.src='{% static 'mysite_test/home_img.jpg' %}';">
       <div class="container">
         <h1>Find time to <a href="{% url 'learn-options' %}">learn</a></h1>
       </div>

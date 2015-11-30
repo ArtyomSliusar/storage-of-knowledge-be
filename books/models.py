@@ -1,4 +1,27 @@
 from django.db import models
+from django.contrib.auth.models import User
+
+
+class Subject(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Post(models.Model):
+    topic = models.CharField(max_length=50)
+    body = models.TextField()
+    comment = models.CharField(max_length=5000)
+    subject = models.ForeignKey(Subject)
+    user = models.ForeignKey(User)
+    private = models.BooleanField(default=0)
+
+    def __str__(self):
+        return self.topic
+
+    class Meta:
+        ordering = ["topic"]
 
 
 class Publisher(models.Model):

@@ -11,6 +11,34 @@
     src: url("http://s3.amazonaws.com/codecademy-content/courses/ltp/fonts/shift-bold.woff") format("woff");
 }
 
+.messages {
+    width:100%;
+    min-height:100%;
+    background-color: rgba(0,0,0,0.5);
+    overflow:hidden;
+    position:fixed;
+    top:0;
+    z-index:2001;
+}
+
+.b-popup-content p {
+    font-family: 'Shift', sans-serif;
+    color: rgb(3, 3, 1);
+    font-size: 20px;
+    text-align: center;
+}
+
+.b-popup-content {
+    margin:40px auto 0 auto;
+    width:350px;
+    height: auto;
+    padding: 30px;
+    background-color: #c5c5c5;
+    border-radius:5px;
+    box-shadow: 0 0 10px #000;
+    word-wrap: break-word;
+}
+
 .nav {
     background-color: #efefef;
     padding-top: 10px;
@@ -22,7 +50,7 @@
 
 .nav li {
     display: inline;
-    color: #1e5aff;
+    color: #030103;
     font-size: 15px;
     font-weight: bold;
     margin-right: 20px;

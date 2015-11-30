@@ -27,13 +27,48 @@ __author__ = 'Artem'
 #
 # print  BASE_DIR
 
-a = [[['a']]]
+# a = [[['a']]]
+#
+# def rec(input):
+#     if type(input) is list:
+#         print '1'
+#         rec(input[0])
+#     else:
+#         print input
+#
+# rec(a)
+#
+query = 'dg'
 
-def rec(input):
-    if type(input) is list:
-        print '1'
-        rec(input[0])
-    else:
-        print input
+text = 'fdsfs fsdgdf query gfd jhgfjg'
 
-rec(a)
+
+st = fn = False
+
+beg = text.find(query)
+
+n = 0
+while st is False:
+    n += 1
+    ind = beg-n
+    if ind <= 0:
+        start = 0
+        break
+    start = text[ind]
+    if not start.isalpha():
+        start = ind
+        st = True
+n = 0
+while fn is False:
+    n += 1
+    ind = beg+len(query)+n
+    if ind >= len(text):
+        finish = len(text)
+        break
+    finish = text[ind]
+    if not finish.isalpha():
+        finish = ind
+        fn = True
+
+subs = text[start:finish]
+print subs

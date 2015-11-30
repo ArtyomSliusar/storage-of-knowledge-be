@@ -31,6 +31,7 @@ TEMPLATES = [
     },
 ]
 
+LOGIN_REDIRECT_URL = ('/home/')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -45,6 +46,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/login/'
 
 # Application definition
 
@@ -103,18 +105,19 @@ USE_TZ = True
 
 
 # Email settings:
+EMAIL_USE_TLS = True
 
-DEFAULT_FROM_EMAIL = "slusar@bkc.com.ua"
+EMAIL_HOST = 'smtp.gmail.com'
 
-EMAIL_HOST = "localhost"
+EMAIL_PORT = 587
 
-EMAIL_HOST_USER = "slusar"
+EMAIL_HOST_USER = 'StorageOfKnowledge@gmail.com'
 
-EMAIL_HOST_PASSWORD = "san020788"
+EMAIL_HOST_PASSWORD = 'S_t%or#ag4eOf9Kn@owl-edge'
 
-EMAIL_PORT = 25
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-#EMAIL_USE_TLS = True
+SERVER_EMAIL = EMAIL_HOST_USER
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
