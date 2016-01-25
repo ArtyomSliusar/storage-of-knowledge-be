@@ -29,15 +29,56 @@ def search(request):
 
 
 def search_posts(request):
-    # q_subject = request.GET.get('subject', '')
-    # q_topic = request.GET.get('topic', '')
-    form = PostForm(request.POST)
+
+    form = PostForm(request.GET, empty_permitted=True)
+    topic_results = []
+    body_results = []
     if form.is_valid():
-        pass
+        subject = request.GET.get('subject', '')
+        topic = request.GET.get('topic', '')
+        topic_qset = (Q(private=0))
+        body_qset = (Q(private=0))
+
+        if request.user.is_authenticated():
+            username = request.user.username
+            user_id = User.objects.get(username=username)
+            topic_qset.add(Q(user_id=user_id), Q.OR)
+            body_qset.add(Q(user_id=user_id), Q.OR)
+
+        if subject:
+            topic_qset.add(Q(subject=subject), Q.AND)
+            body_qset.add(Q(subject=subject), Q.AND)
+        if topic:
+            topic_qset.add(Q(topic__icontains=topic), Q.AND)
+            body_qset.add(Q(body__icontains=topic), Q.AND)
+        else:
+            body_qset = []
+
+        topic_results = Post.objects.filter(topic_qset).distinct()
+
+        if body_qset:
+            body_results = Post.objects.filter(body_qset).distinct()
+            body_results = set(body_results) - set(topic_results)
+
+    return render_to_response("note_options/note_options.html", {'form': form, "topic_results": topic_results,
+                                                                 "body_results": body_results, "query": True}, RequestContext(request))
 
 
-
-    return render_to_response("posts/search_posts.html", RequestContext(request))
+def show_post(request):
+    post_id = int(request.GET.get('id', ''))
+    post = Post.objects.get(id=post_id)
+    error = ''
+    if post.private == 1:
+        if request.user.is_authenticated():
+            username = request.user.username
+            user_id = User.objects.get(username=username).id
+            if post.user_id != user_id:
+                error = 'This post is private, only author can view this post.'
+                post = []
+        else:
+            error = 'This post is private, please login.'
+            post = []
+    return render_to_response('posts/show_post.html', {'post': post, 'error': error}, RequestContext(request))
 
 
 def get_home(request):
@@ -45,18 +86,31 @@ def get_home(request):
 
 
 def learn_options(request):
+    return render_to_response("learn_options/learn_options.html", RequestContext(request))
+
+
+def check_options(request):
+    return render_to_response("check_options/check_options.html", RequestContext(request))
+
+
+def note_options(request):
     form = PostForm()
-    return render_to_response("learn_options/learn_options.html", {'form': form}, RequestContext(request))
+    return render_to_response("note_options/note_options.html", {'form': form}, RequestContext(request))
 
 
 def get_topics(request):
     if request.is_ajax():
         query = request.GET.get('term', '')
         qset = (Q(topic__icontains=query))
+        if request.user.is_authenticated():
+            username = request.user.username
+            user_id = User.objects.get(username=username)
+        else:
+            user_id = None
         extra_param = request.GET.get('subject', '')
         if extra_param:
             qset.add(Q(subject=extra_param), Q.AND)
-        posts = Post.objects.filter(qset)[:20]
+        posts = Post.objects.filter(qset, Q(private=0) | Q(user_id=user_id))[:20]
         results = []
         for post in posts:
             results.append(post.topic)
@@ -111,13 +165,13 @@ def reset_password_confirm(request, uidb64=None, token=None):
 
 
 def user_logout(request):
-    redirect_to = request.REQUEST.get('next', '/home/')
+    redirect_to = request.GET.get('next', '/home/')
     logout(request)
     return HttpResponseRedirect(redirect_to, RequestContext(request))
 
 
 def register(request):
-    redirect_to = request.REQUEST.get('next', '/home/')
+    redirect_to = request.GET.get('next', '/home/')
     if request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():

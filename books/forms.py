@@ -4,6 +4,7 @@ from django import forms
 from models import Publisher, Post
 from django.forms import ModelForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 
 TOPIC_CHOICES = (
@@ -33,13 +34,28 @@ class PublisherForm(ModelForm):
 
 
 class PostForm(ModelForm):
-    #subject = forms.ModelChoiceField(queryset=Post.objects.only("subject"))
-    #topic = forms.ChoiceField(choices=TOPIC_CHOICES)
-    #text_to_search = forms.CharField(label='Search for:', max_length=100)
+
+    # subject = forms.CharField()
+    # topic = forms.CharField()
+    # subject = forms.ModelChoiceField(queryset=Post.objects.only("subject"))
+    # text_to_search = forms.CharField(label='Search for:', max_length=100)
 
     class Meta:
         model = Post
         fields = ['subject', 'topic']
+
+    def remove_error(self, field, message='This field is required.'):
+        if message in self.errors[field][0] and len(self.errors[field]) == 1:
+            del self.errors[field]
+
+    def __init__(self, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)
+        self.fields['subject'].empty_label = "All"
+        if self.errors:
+            if 'subject' in self.errors:
+                self.remove_error('subject')
+            if 'topic' in self.errors:
+                self.remove_error('topic')
 
 
 class UserForm(ModelForm):
