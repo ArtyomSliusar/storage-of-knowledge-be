@@ -75,12 +75,12 @@ var select_row = function() {
 
 
 var add_comments = function() {
-    $('.btn').click(function() {
+    $('#comment_btn').click(function() {
         var post = $('.status-box').val();
         $('<li>').text(post).prependTo('.comment-posts');
         $('.status-box').val('');
         $('.comment-counter').text(5000);
-        $('.btn').addClass('disabled');
+        $('#comment_btn').addClass('disabled');
     });
 
     $('.status-box').keyup(function() {
@@ -88,11 +88,11 @@ var add_comments = function() {
         var charactersLeft = 5000 - postLength;
         $('.comment-counter').text(charactersLeft);
         if (charactersLeft < 0) {
-            $('.btn').addClass('disabled');
+            $('#comment_btn').addClass('disabled');
         } else if (charactersLeft == 5000) {
-            $('.btn').addClass('disabled');
+            $('#comment_btn').addClass('disabled');
         } else {
-            $('.btn').removeClass('disabled');
+            $('#comment_btn').removeClass('disabled');
         }
     });
 };
@@ -121,5 +121,5 @@ var main = function() {
     add_comments();
 };
 
-$('.btn').addClass('disabled');
+$('#comment_btn').addClass('disabled');
 $(document).ready(main);

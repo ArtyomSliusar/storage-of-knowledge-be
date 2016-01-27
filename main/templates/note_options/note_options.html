@@ -68,8 +68,11 @@
                         <label for="{{ form.topic.id_for_label }}">Topic:</label>
                         {{ form.topic }}
                     </div>
-                    <p id="button"><input type="submit" value="Search"></p>
+                    <p id="submit"><input type="submit" class="btn btn-primary btn-sm" value="Search"></p>
                 </form>
+                <div id="add_note">
+                  <a href="http://fs.to/"><button type="button" class="btn btn-primary btn-sm">Add note</button></a>
+                </div>
                 {% if query %}
                     <div id="results">
                         <h2>Results:</h2>
