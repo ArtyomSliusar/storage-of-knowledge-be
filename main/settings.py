@@ -51,13 +51,12 @@ LOGIN_URL = '/login/'
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'books',
+    'my_storage',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -68,6 +67,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'my_storage.middleware.timezone_middleware.TimezoneMiddleware',
 )
 
 ROOT_URLCONF = 'main.urls'
@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'main.wsgi.application'
 
 DATABASES = {
     'default': {
-        'NAME': 'Django',
+        'NAME': 'KnowledgeStorage',
         'ENGINE': 'django.db.backends.mysql',
         'HOST': '127.0.0.1',
         'PORT': '3306',
@@ -134,3 +134,6 @@ STATICFILES_DIRS = (
 )
 
 #STATIC_ROOT = "e:/Work_files/test_application/wed_project/mysite/"
+
+
+AUTH_PROFILE_MODULE = "my_storage.UserProfile"

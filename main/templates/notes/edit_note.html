@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if error %}
+        <h2>Sorry, </h2>
+        {{ error|escape }}
+    {% else %}
+        <h2>Edit note</h2>
+        <form action="./?id={{ note_id }}" method="POST">
+            <table>
+                {{ form.as_table }}
+            </table>
+            <p><input type="submit" value="Save"></p>
+            {% csrf_token %}
+        </form>
+    {% endif %}
+{% endblock %}

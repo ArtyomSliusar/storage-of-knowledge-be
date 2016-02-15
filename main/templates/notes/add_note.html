@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Contact administrator</h2>
+    <h2>Add note</h2>
     <form action="./?next={{ redirect_to }}" method="POST">
-        {% csrf_token %}
         <table>
             {{ form.as_table }}
         </table>
-        <p><input type="submit" value="Submit"></p>
+        <p><input type="submit" value="Save"></p>
+        {% csrf_token %}
     </form>
 {% endblock %}

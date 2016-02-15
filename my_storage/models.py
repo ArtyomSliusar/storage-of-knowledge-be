@@ -12,7 +12,6 @@ class Subject(models.Model):
 class Note(models.Model):
     topic = models.CharField(max_length=100)
     body = models.TextField()
-    comment = models.CharField(max_length=5000)
     subject = models.ForeignKey(Subject)
     user = models.ForeignKey(User)
     private = models.BooleanField(default=0)
@@ -25,13 +24,19 @@ class Note(models.Model):
         ordering = ["topic"]
 
 
-class Author(models.Model):
-    salutation = models.CharField(max_length=10)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=40)
-    email = models.EmailField()
-    headshot = models.ImageField(upload_to='')
+class CommentsForNote(models.Model):
+    user = models.ForeignKey(User)
+    comment = models.CharField(max_length=5000)
+    note = models.ForeignKey(Note)
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '%s %s' % (self.first_name, self.last_name)
+        return self.comment
 
+
+class UserProfile(models.Model):
+    user = models.ForeignKey(User)
+    time_zone = models.CharField(max_length=50)
+
+
+User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

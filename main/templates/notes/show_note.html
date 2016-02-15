@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'knowledge_storage/main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" type="text/css" media="all" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  </head>
+
+  <body>
+    <div class="show-note">
+        {% if error %}
+            <h2>Sorry, </h2>
+            {{ error|escape }}
+        {% elif note %}
+            <h2 id="note_id">Note #{{ note.id|escape }} </h2>
+            <p><label for="{{ note.subject.id_for_label }}">Subject:</label> {{ note.subject|escape }}</p>
+            <p><label for="{{ note.topic.id_for_label }}">Topic:</label> {{ note.topic|escape }}</p>
+            <p><label for="{{ note.user.id_for_label }}">Author:</label> {{ note.user|escape }}</p>
+            <p><label for="{{ note.date.id_for_label }}">Date:</label> {{ note.date|date:"N j, Y H:i:s" }}</p>
+            <p><label for="{{ note.body.id_for_label }}">Body:</label> {{ note.body|escape }}</p>
+
+            {% if options %}
+                <div id="edit_note">
+                    <a href="{% url 'edit_note' %}?id={{note.id}}"><button type="button" class="btn btn-primary btn-sm">Edit</button></a>
+                </div>
+                <div id="delete_note">
+                    <a href="{% url 'delete_note' %}?id={{note.id}}" onclick="return confirm('Are you sure you want to delete this note?');">
+                        <button type="button" class="btn btn-primary btn-sm">Delete</button></a>
+                </div>
+                <div id="back_to_notes">
+                    <a href="{% url 'search_notes' %}"><button type="button" class="btn btn-primary btn-sm">Back</button></a>
+                </div>
+            {% endif %}
+
+            {% if is_auth_user %}
+                <div class="container" id="comment">
+                  <form>
+                      <div class="form-group">
+                          <textarea class="form-control status-box" rows="2" placeholder="What do think about this note?"></textarea>
+                      </div>
+                  </form>
+                  <div class="pull-right" id="comment_btn_counter">
+                      <p class="comment-counter">5000</p>
+                      <button type="button" id="comment_btn" class="btn btn-primary">Comment</button>
+                  </div>
+                </div>
+            {% endif %}
+
+            <ul class="comment-notes">
+            {% if comments %}
+                {% for comment in comments %}
+                    <li>
+                        <p>{{ comment.user }}</p>
+                        <p>{{ comment.date|date:"N j, Y H:i:s" }}</p>
+                        <p>{{ comment.comment }}</p>
+                    </li>
+                {% endfor %}
+            {% endif %}
+            </ul>
+
+        {% endif %}
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="{% static 'knowledge_storage/main.js' %}"></script>
+  </body>
+</html>
