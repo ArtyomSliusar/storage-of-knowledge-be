@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+{% load staticfiles %}
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="{% static 'knowledge_storage/css/note_base_forms.css' %}">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+        <style>
+            body {
+                background-color: #F8F8F8;;
+                overflow: scroll;
+            }
+            .smart-form {
+                margin: 0;
+                border-radius: 0;}
+            .smart-form h1 {
+                border-radius: 0;
+            }
+            #id_topic {
+                width: 99.4%;
+            }
+            #id_private {
+                margin-top: 12px;
+            }
+            .smart-form input[type="submit"] {
+                margin-bottom: 30px;
+            }
+            .django-ckeditor-widget{
+                width: 100%;
+            }
+        </style>
+
+        {% load wysiwyg %}
+        {% wysiwyg_setup  %}
+
+        {% block header %}
+        {% endblock %}
+    </head>
+
+    <body>
+        {% block content %}
+        {% endblock %}
+        {% wysiwyg_editor "id_body" %}
+        {% block footer %}
+        {% endblock %}
+    </body>
+</html>

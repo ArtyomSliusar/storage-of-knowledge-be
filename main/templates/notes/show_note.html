@@ -3,37 +3,134 @@
 <html>
 
   <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'knowledge_storage/main.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" type="text/css" media="all" />
-    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" onError="this.onerror=null;this.href='{% static 'knowledge_storage/css/bootstrap.min.css' %}';">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" type="text/css" media="all" onError="this.onerror=null;this.href='{% static 'knowledge_storage/css/jquery-ui.css' %}';">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' onError="this.onerror=null;this.href='{% static 'knowledge_storage/css/roboto_fonts.css' %}';">
+    <link rel="stylesheet" href="{% static 'knowledge_storage/css/note_base_forms.css' %}">
+    <style>
+        body {
+            background-color: #F8F8F8;;
+            overflow: scroll;
+        }
+        #r_id, #t_id {
+            display: none;
+        }
+        .smart-form {
+            margin: 0;
+            border-radius: 0;}
+        .smart-form h1 {
+            background: #428bca;
+            border-radius: 0;
+        }
+        .smart-form p {
+            font-size: 1.5em;
+        }
+        .smart-form span {
+            padding-left: 10px;
+            padding-right: 10px;
+            font-size: 0.8em;
+        }
+        .smart-form input[type="submit"] {
+            margin-bottom: 30px;
+        }
+        #edit_note, #delete_note, #back_to_notes {
+            display: inline-block;
+        }
+        #note_body {
+            margin: 30px;
+            padding: 10px;
+            width: auto;
+            border: 1px solid #030103;
+            background: #FFFFFF;
+        }
+        .form-control {
+            resize: vertical;
+        }
+        #comment {
+            max-width: 500px;
+        }
+        #comment_btn.disabled {
+            cursor: default;
+        }
+        .container#comment {
+            width: 520px;
+            margin-top: 20px;
+        }
+        #comment_btn_counter {
+            margin-bottom: 20px;
+        }
+        .comment-counter {
+            display: inline;
+            margin-top: 0;
+            margin-bottom: 0;
+            margin-right: 10px;
+        }
+        .tip {
+            width: 0px;
+            height: 0px;
+            position: absolute;
+            background: transparent;
+            border: 10px solid #ccc;
+        }
+        .tip-left {
+            top: 10px;
+            left: -25px;
+            border-top-color: transparent;
+            border-left-color: transparent;
+            border-bottom-color: transparent;
+        }
+        .dialogbox .comment-notes {
+            position: relative;
+            max-width: 400px;
+            height: auto;
+            margin: 20px 10px;
+            padding: 5px;
+            background-color: #DADADA;
+            border-radius: 3px;
+            border: 5px solid #ccc;
+        }
+        .comment-notes .message {
+            min-height: 30px;
+            border-radius: 3px;
+            font-family: Arial;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #797979;
+            word-wrap: break-word;
+        }
+    </style>
   </head>
 
   <body>
     <div class="show-note">
-        {% if error %}
-            <h2>Sorry, </h2>
-            {{ error|escape }}
-        {% elif note %}
-            <h2 id="note_id">Note #{{ note.id|escape }} </h2>
-            <p><label for="{{ note.subject.id_for_label }}">Subject:</label> {{ note.subject|escape }}</p>
-            <p><label for="{{ note.topic.id_for_label }}">Topic:</label> {{ note.topic|escape }}</p>
-            <p><label for="{{ note.user.id_for_label }}">Author:</label> {{ note.user|escape }}</p>
-            <p><label for="{{ note.date.id_for_label }}">Date:</label> {{ note.date|date:"N j, Y H:i:s" }}</p>
-            <p><label for="{{ note.body.id_for_label }}">Body:</label> {{ note.body|escape }}</p>
-
-            {% if options %}
-                <div id="edit_note">
-                    <a href="{% url 'edit_note' %}?id={{note.id}}"><button type="button" class="btn btn-primary btn-sm">Edit</button></a>
-                </div>
-                <div id="delete_note">
-                    <a href="{% url 'delete_note' %}?id={{note.id}}" onclick="return confirm('Are you sure you want to delete this note?');">
-                        <button type="button" class="btn btn-primary btn-sm">Delete</button></a>
-                </div>
-                <div id="back_to_notes">
-                    <a href="{% url 'search_notes' %}"><button type="button" class="btn btn-primary btn-sm">Back</button></a>
-                </div>
+        <div class="smart-form">
+            {% if error %}
+                <h1>Sorry, </h1>
+                {{ error|escape }}
+            {% elif note %}
+                <h1>Note</h1>
+                <p id="r_id">{{ note.id|escape }}</p>
+                <p id="t_id">{{ type_id|escape }}</p>
+                <p>Subject:&nbsp<span>{{ note.subject|escape }}</span></p>
+                <p>Topic:&nbsp<span>{{ note.topic|escape }}</span></p>
+                <p>Author:&nbsp<span>{{ note.user|escape }}</span></p>
+                <p>Date:&nbsp<span>{{ note.date|date:"N j, Y H:i:s" }}</span></p>
+                {% if options %}
+                    <div id="back_to_notes">
+                        <a href="{% url 'search_notes' %}"><button type="button" class="btn btn-primary">Back</button></a>
+                    </div>
+                    <div id="edit_note">
+                        <a href="{% url 'edit_note' %}?id={{note.id}}"><button type="button" class="btn btn-primary">Edit</button></a>
+                    </div>
+                    <div id="delete_note">
+                        <a href="{% url 'delete_note' %}?id={{note.id}}" onclick="return confirm('Are you sure you want to delete this note?');">
+                            <button type="button" class="btn btn-primary">Delete</button></a>
+                    </div>
+                {% endif %}
             {% endif %}
+        </div>
+        {% if note %}
+            <div id="note_body">{{ note.body|safe }}</div>  <!-- keep it away from "smart-form" because of sensitive css data -->
 
             {% if is_auth_user %}
                 <div class="container" id="comment">
@@ -43,29 +140,33 @@
                       </div>
                   </form>
                   <div class="pull-right" id="comment_btn_counter">
-                      <p class="comment-counter">5000</p>
+                      <p class="comment-counter">2000</p>
                       <button type="button" id="comment_btn" class="btn btn-primary">Comment</button>
                   </div>
                 </div>
             {% endif %}
 
-            <ul class="comment-notes">
-            {% if comments %}
-                {% for comment in comments %}
-                    <li>
-                        <p>{{ comment.user }}</p>
-                        <p>{{ comment.date|date:"N j, Y H:i:s" }}</p>
-                        <p>{{ comment.comment }}</p>
-                    </li>
-                {% endfor %}
-            {% endif %}
-            </ul>
-
+            <div class="dialogbox">
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="comment-notes">
+                            <span class="tip tip-left"></span>
+                            <div class="message">
+                                <p>{{ comment.user }}</p>
+                                <p>{{ comment.date|date:"N j, Y H:i:s" }}</p>
+                                <p>{{ comment.comment|escape }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
         {% endif %}
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="{% static 'knowledge_storage/main.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{% static 'knowledge_storage/js/jquery-2.2.2.min.js' %}"><\/script>')</script>
+    <script src="{% static 'knowledge_storage/js/jquery-ui.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'knowledge_storage/js/main.js' %}"></script>
+    <script src="{% static 'knowledge_storage/js/note_options.js' %}"></script>
   </body>
 </html>

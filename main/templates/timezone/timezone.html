@@ -1,10 +1,16 @@
-{% extends "base.html" %}
+{% extends "register_forms.html" %}
+
+{% block header %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Timezone Form</title>
+{% endblock %}
 
 {% block content %}
-    <h2>Please, select your time zone</h2>
+    <h1 class="register-title">Select your time zone</h1>
     {% load tz %}
     {% get_current_timezone as TIME_ZONE %}
-    <form action="{% url 'set_user_timezone' %}?next={{ redirect_to }}" method="POST">
+    <form action="{% url 'set_user_timezone' %}?next={{ redirect_to }}" method="POST" class="register">
         {% csrf_token %}
         <label for="timezone">Time zone:</label>
         <select name="timezone">
@@ -12,6 +18,6 @@
             <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected="selected"{% endif %}>{{ tz }}</option>
             {% endfor %}
         </select>
-        <input type="submit" value="Set" />
+        <input type="submit" value="Set" class="register-button"/>
     </form>
 {% endblock %}

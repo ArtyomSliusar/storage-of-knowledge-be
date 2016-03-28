@@ -1,12 +1,10 @@
-{% extends "base.html" %}
+{% extends "note_forms.html" %}
 
 {% block content %}
-    <h2>Add note</h2>
-    <form action="./?next={{ redirect_to }}" method="POST">
-        <table>
-            {{ form.as_table }}
-        </table>
-        <p><input type="submit" value="Save"></p>
+    <form action="./?next={{ redirect_to }}" method="POST" class="smart-form">
+        <h1>Add note</h1>
+        {{ form.as_p }}
+        <p><input type="submit" value="Save" class="button"></p>
         {% csrf_token %}
     </form>
 {% endblock %}

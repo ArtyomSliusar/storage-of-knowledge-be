@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" onError="this.onerror=null;this.href='{% static 'knowledge_storage/css/bootstrap.min.css' %}';">
+    <link rel="stylesheet" href="{% static 'knowledge_storage/css/main.css' %}">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' onError="this.onerror=null;this.href='{% static 'knowledge_storage/css/roboto_fonts.css' %}';">
+  </head>
+  <input type="hidden" id="refreshed" value="no">
+
+  <body>
+
+    {% if messages %}
+    <div class="messages">
+        <div class="b-popup-content">
+            {% for message in messages %}
+            <p><b>{{ message }}</b></p>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="show-links">
+
+      <div id="back_to_options">
+          <a href="{% url back_address %}"><button type="button" class="btn btn-primary">Back</button></a>
+      </div>
+      <div id="add_link">
+          <a href="{% url 'add_link' %}?next={{request.path}}&s_id={{subject_id}}&t_id={{type_id}}"><button type="button" class="btn btn-primary">Add link</button></a>
+      </div>
+      <h1>Links:</h1>
+      {% if links %}
+          {% if user %}
+              <p id="links_p"><label><input type="checkbox" name="users_only" id="users_only_links"> Only my links</label></p>
+              <input type="hidden" id="current_user" value={{ user }}>
+          {% endif %}
+
+          <div style="overflow-x:auto;">
+              <table id="links_table">
+                  <p id="t_id">{{ type_id|escape }}</p>
+                  <tr>
+                      <th>Topic</th>
+                      <th>Added by</th>
+                      <th>Date</th>
+                      <th>Likes</th>
+                      <th>Dislikes</th>
+                      <th></th>
+                  </tr>
+                  {% for link in links %}
+                      <tbody>
+                          <tr id="{{ link.id|escape }}">
+                              <td><a class="link_topic" href="javascript:" onclick="window.open('{{ link.link|escape }}');" target="_blank">{{ link.link_name|escape }}</a></td>
+                              <td class="author">{{ link.user|escape }}</td>
+                              <td>{{ link.date|date:"N j, Y H:i:s" }}</td>
+                              {% if link.like_pressed %}
+                                  <td><a href="javascript: void(0)" class="like pressed"><img src='{% static 'knowledge_storage/img/like.png' %}'><span>{{ link.likes }}</span></a></td>
+                                  <td><a href="javascript: void(0)" class="dislike plain"><img src='{% static 'knowledge_storage/img/dislike.png' %}'><span>{{ link.dislikes }}</span></a></td>
+                              {% elif link.dislike_pressed %}
+                                  <td><a href="javascript: void(0)" class="like plain"><img src='{% static 'knowledge_storage/img/like.png' %}'><span>{{ link.likes }}</span></a></td>
+                                  <td><a href="javascript: void(0)" class="dislike pressed"><img src='{% static 'knowledge_storage/img/dislike.png' %}'><span>{{ link.dislikes }}</span></a></td>
+                              {% else %}
+                                  <td><a href="javascript: void(0)" class="like plain"><img src='{% static 'knowledge_storage/img/like.png' %}'><span>{{ link.likes }}</span></a></td>
+                                  <td><a href="javascript: void(0)" class="dislike plain"><img src='{% static 'knowledge_storage/img/dislike.png' %}'><span>{{ link.dislikes }}</span></a></td>
+                              {% endif %}
+                              {% if user == link.user|escape %}
+                                  <td><a href="javascript: void(0)" class="delete_link">
+                                      <img src='{% static 'knowledge_storage/img/delete.png' %}'></a>
+                                  </td>
+                              {% else %}
+                                  <td></td>
+                              {% endif %}
+                          </tr>
+                      </tbody >
+                  {% endfor %}
+              </table>
+          </div>
+      {% else %}
+          <p>No links found</p>
+      {% endif %}
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{% static 'knowledge_storage/js/jquery-2.2.2.min.js' %}"><\/script>')</script>
+    <script src="{% static 'knowledge_storage/js/common.js' %}"></script>
+    <script src="{% static 'knowledge_storage/js/main.js' %}"></script>
+    <script src="{% static 'knowledge_storage/js/link_specific.js' %}"></script>
+  </body>
+
+</html>

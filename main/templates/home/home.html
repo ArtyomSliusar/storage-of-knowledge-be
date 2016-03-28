@@ -3,8 +3,8 @@
 <html>
 
   <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'knowledge_storage/home.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" onError="this.onerror=null;this.href='{% static 'knowledge_storage/css/bootstrap.min.css' %}';">
+    <link rel="stylesheet" href="{% static 'knowledge_storage/css/home.css' %}">
   </head>
 
   <body>
@@ -20,20 +20,21 @@
     {% endif %}
 
     <div class="nav">
-      <div class="icon-courses">
-          <button type="button" class="btn btn-primary btn-sm"><img src='{% static 'knowledge_storage/list.png' %}'
-          style="vertical-align: top"> Courses</button>
-      </div>
-      <ul class="pull-right">
-        {% if request.user.is_authenticated %}
-            <li><a href="{% url 'edit_profile' %}?next={{request.path}}">{{request.user.username}}</a></li>
-            <li><a href="{% url 'logout' %}?next={{request.path}}">Log Out</a></li>
-        {% else %}
-            <li><a href="{% url 'register' %}?next={{request.path}}">Sign Up</a></li>
-            <li><a href="{% url 'login' %}?next={{request.path}}">Log In</a></li>
-        {% endif %}
-        <li><a href="{% url 'contact' %}">Contact</a></li>
-      </ul>
+        <ul>
+            <li id="icon-courses">
+                <a href="javascript: void(0)">
+                    <img src='{% static 'knowledge_storage/img/list.png' %}' style="vertical-align: top"> Courses
+                </a>
+            </li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+            {% if request.user.is_authenticated %}
+                <li><a href="{% url 'logout' %}?next={{request.path}}">Logout</a></li>
+                <li><a href="{% url 'edit_profile' %}?next={{request.path}}">{{request.user.username}}</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}?next={{request.path}}">Login</a></li>
+                <li><a href="{% url 'register' %}?next={{request.path}}">Sign up</a></li>
+            {% endif %}
+        </ul>
     </div>
 
     <div class="courses">
@@ -52,8 +53,9 @@
     </div>
 
     <div class="jumbotron">
-      <img src="https://mrcallens.files.wordpress.com/2013/08/lost-book.jpg?w=1278&h=500&crop=1" alt="Image not found" onError="this.onerror=null;this.src='{% static 'knowledge_storage/home_img.jpg' %}';">
-      <div class="container">
+      <img src=''  srcset="{% static 'knowledge_storage/img/home_small-density.jpg' %} 1024w, {% static 'knowledge_storage/img/home_medium-density.jpg' %} 1600w,
+      {% static 'knowledge_storage/img/home_high-density.jpg' %} 1920w, {% static 'knowledge_storage/img/home_ultra-density.jpg' %} 3840w" alt="Image not found">
+        <div class="container">
         <h1>Find time to <a href="{% url 'learn_options' %}">learn</a></h1>
       </div>
     </div>
@@ -72,11 +74,7 @@
             <p>Jeff Cooper</p>
         </div>
         <div class="footer_slide">
-            <h2>"A single conversation across the table with a wise man is better than ten years mere study of books."</h2>
-            <p>Henry Wadsworth Longfellow</p>
-        </div>
-        <div class="footer_slide">
-            <h2>"It is wise to direct your anger towards problems-not people; to focus your energies on answers-not excuses."</h2>
+            <h2>"It is wise to direct your anger towards problems-not people."</h2>
             <p>William Arthur Ward</p>
         </div>
         <div class="footer_slide">
@@ -84,8 +82,10 @@
             <p>Benjamin Franklin</p>
         </div>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="http://malsup.github.io/min/jquery.cycle.all.min.js"></script>
-    <script src="{% static 'knowledge_storage/home.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{% static 'knowledge_storage/js/jquery-2.2.2.min.js' %}"><\/script>')</script>
+    <script src="{% static 'knowledge_storage/js/jquery.cycle.all.min.js' %}"></script>
+    <script src="{% static 'knowledge_storage/js/common.js' %}"></script>
+    <script src="{% static 'knowledge_storage/js/home.js' %}"></script>
   </body>
 </html>

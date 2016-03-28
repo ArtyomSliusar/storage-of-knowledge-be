@@ -1,18 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
+from ckeditor.fields import RichTextField
 
 
-class Subject(models.Model):
+class Subjects(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
 
 
-class Note(models.Model):
+class Notes(models.Model):
     topic = models.CharField(max_length=100)
-    body = models.TextField()
-    subject = models.ForeignKey(Subject)
+    body = RichTextField()
+    subject = models.ForeignKey(Subjects)
     user = models.ForeignKey(User)
     private = models.BooleanField(default=0)
     date = models.DateTimeField(auto_now_add=True)
@@ -24,10 +25,38 @@ class Note(models.Model):
         ordering = ["topic"]
 
 
-class CommentsForNote(models.Model):
+class TypeTable(models.Model):
+    type_name = models.CharField(max_length=100)
+
+
+class Links(models.Model):
+    link_name = models.CharField(max_length=100)
+    link = models.CharField(max_length=2000)
+    subject = models.ForeignKey(Subjects)
     user = models.ForeignKey(User)
-    comment = models.CharField(max_length=5000)
-    note = models.ForeignKey(Note)
+    type = models.ForeignKey(TypeTable)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.link
+
+    class Meta:
+        ordering = ["link_name"]
+
+
+class LikesDislikes(models.Model):
+    type = models.ForeignKey(TypeTable)
+    resource_id = models.IntegerField()
+    user = models.ForeignKey(User)
+    like = models.BooleanField(default=0)
+    dislike = models.BooleanField(default=0)
+
+
+class Comments(models.Model):
+    user = models.ForeignKey(User)
+    comment = models.CharField(max_length=2000)
+    resource_id = models.IntegerField()
+    type = models.ForeignKey(TypeTable)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

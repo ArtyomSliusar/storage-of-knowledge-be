@@ -2,10 +2,12 @@ __author__ = 'Artem Sliusar'
 
 
 from django import forms
-from models import Note
+from models import Notes, Links
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.forms import modelform_factory
+from django.core.validators import URLValidator
+from django.contrib.auth.forms import UserCreationForm
 
 
 TOPIC_CHOICES = (
@@ -27,13 +29,31 @@ class ContactForm(forms.Form):
     sender = forms.EmailField(required=False)
 
 
-NoteForm = modelform_factory(Note, fields=("subject", "topic", "body", "private"))
+NoteForm = modelform_factory(Notes, fields=("subject", "topic", "body", "private"))
+
+
+class LinkForm(ModelForm):
+    link_name = forms.CharField(max_length=100)
+    link = forms.CharField(max_length=2000)
+
+    class Meta:
+        model = Links
+        fields = ("link_name", "link")
+
+    def clean_link(self):
+        url = self.cleaned_data.get('link')
+        validate = URLValidator()
+        try:
+            validate(url)
+            return url
+        except forms.ValidationError:
+            raise forms.ValidationError(u'Incorrect url format')
 
 
 class SearchNotesForm(ModelForm):
 
     class Meta:
-        model = Note
+        model = Notes
         fields = ['subject', 'topic']
 
     def remove_error(self, field, message='This field is required.'):
@@ -50,13 +70,13 @@ class SearchNotesForm(ModelForm):
                 self.remove_error('topic')
 
 
-class UserForm(ModelForm):
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput())
+class UserForm(UserCreationForm):
+    email = forms.EmailField(required=True)
 
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password')
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        self.fields['username'].help_text = None
+        self.fields['password2'].help_text = None
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -67,13 +87,13 @@ class UserForm(ModelForm):
             return email
 
 
-class EditUserForm(ModelForm):
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput())
+class EditUserForm(UserCreationForm):
+    email = forms.EmailField(required=True)
 
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password')
+    def __init__(self, *args, **kwargs):
+        super(EditUserForm, self).__init__(*args, **kwargs)
+        self.fields['username'].help_text = None
+        self.fields['password2'].help_text = None
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -85,7 +105,7 @@ class EditUserForm(ModelForm):
 
     def save(self, commit=True):
         user = super(EditUserForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password"])
+        user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
         return user

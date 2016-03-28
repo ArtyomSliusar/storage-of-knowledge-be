@@ -3,10 +3,11 @@
 <html>
 
   <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'knowledge_storage/main.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" onError="this.onerror=null;this.href='{% static 'knowledge_storage/css/bootstrap.min.css' %}';">
+    <link rel="stylesheet" href="{% static 'knowledge_storage/css/main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" type="text/css" media="all" onError="this.onerror=null;this.href='{% static 'knowledge_storage/css/jquery-ui.css' %}';">
   </head>
+  <input type="hidden" id="refreshed" value="no">
 
   <body>
 
@@ -22,19 +23,19 @@
 
     <header id="header">
         <div class="header-nav">
-          <ul class="pull-left">
-            <li><a href="{% url 'home' %}">Home</a></li>
-          </ul>
-          <ul class="pull-right">
-            {% if request.user.is_authenticated %}
-                <li><a href="{% url 'edit_profile' %}?next={{request.path}}">{{request.user.username}}</a></li>
-                <li><a href="{% url 'logout' %}?next={{request.path}}">Log Out</a></li>
-            {% else %}
-                <li><a href="{% url 'register' %}?next={{request.path}}">Sign Up</a></li>
-                <li><a href="{% url 'login' %}?next={{request.path}}">Log In</a></li>
-            {% endif %}
-            <li><a href="{% url 'contact' %}?next={{request.path}}">Contact</a></li>
-          </ul>
+            <ul>
+                <li id="home">
+                    <a href="{% url 'home' %}">Home</a>
+                </li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}?next={{request.path}}">Logout</a></li>
+                    <li><a href="{% url 'edit_profile' %}?next={{request.path}}">{{request.user.username}}</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}?next={{request.path}}">Login</a></li>
+                    <li><a href="{% url 'register' %}?next={{request.path}}">Sign up</a></li>
+                {% endif %}
+            </ul>
         </div>
 
         <nav class="subnav">
@@ -51,8 +52,8 @@
             <h1>Personal notes</h1>
             <h2>It is always a good idea to make notes when you are studying. Store your notes remotely and they will
                 be available anytime and anywhere.</h2>
-            <div>
-                <img src="http://www.elanorahts-p.schools.nsw.edu.au/documents/24059411/24066464/notes.png" alt="Image not found" onError="this.onerror=null;this.src='{% static 'knowledge_storage/learn_options_img3.jpg' %}';" />
+            <div id="note_img">
+                <img src="http://www.elanorahts-p.schools.nsw.edu.au/documents/24059411/24066464/notes.png" alt="Image not found" onError="this.onerror=null;this.src='{% static 'knowledge_storage/img/learn_options_img3.jpg' %}';" />
             </div>
             <div id="notes">
                 <form action="{% url 'search_notes' %}" method="GET">
@@ -68,33 +69,47 @@
                         <label for="{{ form.topic.id_for_label }}">Topic:</label>
                         {{ form.topic }}
                     </div>
-                    {% if options %}
-                        <p id="users_only"><label><input type="checkbox" name="users_only"> Only my notes</label></p>
-                    {% endif %}
                     <p id="submit"><input type="submit" class="btn btn-primary btn-sm" value="Search"></p>
                 </form>
                 <div id="add_note">
-                  <a href="{% url 'add_note' %}?next={{request.path}}"><button type="button" class="btn btn-primary btn-sm">Add note</button></a>
+                  <a href="{% url 'add_note' %}?next={{request.path}}"><button type="button" class="btn btn-primary">Add note</button></a>
                 </div>
                 {% if query %}
                     <div id="results">
-                        <h2>Results:</h2>
+                        <p id="t_id">{{ type_id|escape }}</p>
+                        <h2><b><ins>Results:</ins></b></h2>
                         {% if topic_results %}
+                            {% if user %}
+                                <p class="notes_checkbox"><label><input type="checkbox" name="users_only" id="users_notes_main"> Only my notes</label></p>
+                                <input type="hidden" id="current_user" value={{ user }}>
+                            {% endif %}
                             <div style="overflow-x:auto;">
-                                <table>
+                                <table id="main_table">
                                    <tr>
                                        <th>Subject</th>
                                        <th>Topic</th>
                                        <th>Author</th>
                                        <th>Date</th>
+                                       <th>Likes</th>
+                                       <th>Dislikes</th>
                                    </tr>
                                    {% for note in topic_results %}
-                                       <tbody  class="active_row">
-                                           <tr>
+                                       <tbody>
+                                           <tr id="{{ note.id|escape }}">
                                                <td>{{ note.subject|escape }}</td>
-                                               <td><a href="{% url 'show_note' %}?id={{note.id}}">{{ note.topic|escape }}</a></td>
-                                               <td>{{ note.user|escape }}</td>
+                                               <td><a class="note_topic" href="{% url 'show_note' %}?id={{note.id}}">{{ note.topic|escape }}</a></td>
+                                               <td class="author">{{ note.user|escape }}</td>
                                                <td>{{ note.date|date:"N j, Y H:i:s" }}</td>
+                                               {% if note.like_pressed %}
+                                                  <td><a href="javascript: void(0)" class="like pressed"><img src='{% static 'knowledge_storage/img/like.png' %}'><span>{{ note.likes }}</span></a></td>
+                                                  <td><a href="javascript: void(0)" class="dislike plain"><img src='{% static 'knowledge_storage/img/dislike.png' %}'><span>{{ note.dislikes }}</span></a></td>
+                                              {% elif note.dislike_pressed %}
+                                                  <td><a href="javascript: void(0)" class="like plain"><img src='{% static 'knowledge_storage/img/like.png' %}'><span>{{ note.likes }}</span></a></td>
+                                                  <td><a href="javascript: void(0)" class="dislike pressed"><img src='{% static 'knowledge_storage/img/dislike.png' %}'><span>{{ note.dislikes }}</span></a></td>
+                                              {% else %}
+                                                  <td><a href="javascript: void(0)" class="like plain"><img src='{% static 'knowledge_storage/img/like.png' %}'><span>{{ note.likes }}</span></a></td>
+                                                  <td><a href="javascript: void(0)" class="dislike plain"><img src='{% static 'knowledge_storage/img/dislike.png' %}'><span>{{ note.dislikes }}</span></a></td>
+                                              {% endif %}
                                            </tr>
                                        </tbody >
                                    {% endfor %}
@@ -104,22 +119,39 @@
                             <p>No notes found</p>
                         {% endif %}
                         {% if body_results %}
-                            <h2>You may also find these notes useful:</h2>
+                            <br />
+                            <h2><b><ins>You may also find these notes useful:</ins></b></h2>
+                            {% if user %}
+                                <p class="notes_checkbox"><label><input type="checkbox" name="users_only" id="users_notes_secondary"> Only my notes</label></p>
+                                <input type="hidden" id="current_user" value={{ user }}>
+                            {% endif %}
                             <div style="overflow-x:auto;">
-                                <table>
+                                <table id="secondary_table">
                                    <tr>
                                        <th>Subject</th>
                                        <th>Topic</th>
                                        <th>Author</th>
                                        <th>Date</th>
+                                       <th>Likes</th>
+                                       <th>Dislikes</th>
                                    </tr>
                                    {% for note in body_results %}
-                                       <tbody  class="active_row">
-                                           <tr>
+                                       <tbody>
+                                           <tr id="{{ note.id|escape }}">
                                                <td>{{ note.subject|escape }}</td>
-                                               <td><a href="{% url 'show_note' %}?id={{note.id}}">{{ note.topic|escape }}</a></td>
-                                               <td>{{ note.user|escape }}</td>
+                                               <td><a class="note_topic" href="{% url 'show_note' %}?id={{note.id}}">{{ note.topic|escape }}</a></td>
+                                               <td class="author">{{ note.user|escape }}</td>
                                                <td>{{ note.date|date:"N j, Y H:i:s" }}</td>
+                                               {% if note.like_pressed %}
+                                                  <td><a href="javascript: void(0)" class="like pressed"><img src='{% static 'knowledge_storage/img/like.png' %}'><span>{{ note.likes }}</span></a></td>
+                                                  <td><a href="javascript: void(0)" class="dislike plain"><img src='{% static 'knowledge_storage/img/dislike.png' %}'><span>{{ note.dislikes }}</span></a></td>
+                                              {% elif note.dislike_pressed %}
+                                                  <td><a href="javascript: void(0)" class="like plain"><img src='{% static 'knowledge_storage/img/like.png' %}'><span>{{ note.likes }}</span></a></td>
+                                                  <td><a href="javascript: void(0)" class="dislike pressed"><img src='{% static 'knowledge_storage/img/dislike.png' %}'><span>{{ note.dislikes }}</span></a></td>
+                                              {% else %}
+                                                  <td><a href="javascript: void(0)" class="like plain"><img src='{% static 'knowledge_storage/img/like.png' %}'><span>{{ note.likes }}</span></a></td>
+                                                  <td><a href="javascript: void(0)" class="dislike plain"><img src='{% static 'knowledge_storage/img/dislike.png' %}'><span>{{ note.dislikes }}</span></a></td>
+                                              {% endif %}
                                            </tr>
                                        </tbody >
                                    {% endfor %}
@@ -132,8 +164,11 @@
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="{% static 'knowledge_storage/main.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{% static 'knowledge_storage/js/jquery-2.2.2.min.js' %}"><\/script>')</script>
+    <script src="{% static 'knowledge_storage/js/jquery-ui.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'knowledge_storage/js/common.js' %}"></script>
+    <script src="{% static 'knowledge_storage/js/main.js' %}"></script>
+    <script src="{% static 'knowledge_storage/js/note_options.js' %}"></script>
   </body>
 </html>

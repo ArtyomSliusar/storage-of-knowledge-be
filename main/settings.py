@@ -1,5 +1,5 @@
 """
-Django settings for mysite project.
+Django settings for KnowledgeStorage project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
@@ -32,9 +32,7 @@ TEMPLATES = [
 ]
 
 LOGIN_REDIRECT_URL = ('/home/')
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
+LOGIN_URL = '/login/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ['DJANGO_SECURITY_KEY']
@@ -42,11 +40,10 @@ SECRET_KEY = os.environ['DJANGO_SECURITY_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#TEMPLATE_DEBUG = True
+# TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOGIN_URL = '/login/'
 
 # Application definition
 
@@ -57,6 +54,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'my_storage',
+    'ckeditor',
+    'django_wysiwyg',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -119,21 +118,24 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 SERVER_EMAIL = EMAIL_HOST_USER
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/
 
+# Static files settings:
 STATIC_URL = '/static/'
 
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
-    #"django.contrib.staticfiles.finders.AppDirectoriesFinder"
 )
 
 STATICFILES_DIRS = (
    os.path.join(BASE_DIR, 'static'),
 )
 
-#STATIC_ROOT = "e:/Work_files/test_application/wed_project/mysite/"
-
 
 AUTH_PROFILE_MODULE = "my_storage.UserProfile"
+
+
+# WYSIWYG settings:
+DJANGO_WYSIWYG_FLAVOR = 'ckeditor'  # Requires you to also place the ckeditor files here:
+DJANGO_WYSIWYG_MEDIA_URL = STATIC_URL + "ckeditor/"
+
+CKEDITOR_UPLOAD_PATH = "uploads/"

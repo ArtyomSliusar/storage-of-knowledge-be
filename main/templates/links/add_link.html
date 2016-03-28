@@ -1,0 +1,16 @@
+{% extends "base_forms.html" %}
+
+{% block header %}
+    <style>
+        .smart-form {max-width: 500px;}
+    </style>
+{% endblock %}
+
+{% block content %}
+    <form action="./?next={{ redirect_to }}" method="POST" class="smart-form">
+        <h1>Add link</h1>
+        {{ form.as_p }}
+        <p><input type="submit" value="Save" class="button"></p>
+        {% csrf_token %}
+    </form>
+{% endblock %}

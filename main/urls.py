@@ -1,8 +1,10 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth import views as auth_views
+from django.conf.urls import include
 
 
 urlpatterns = patterns('main.views',
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url('^register/', 'register', name='register'),
     url('^edit_profile/', 'edit_profile', name='edit_profile'),
     url('^login/', auth_views.login, {'template_name': 'login/login.html'}, name='login'),
@@ -23,5 +25,10 @@ urlpatterns = patterns('main.views',
     url(r'^show_note/$', 'show_note', name='show_note'),
     url(r'^set_user_timezone/$', 'set_user_timezone', name='set_user_timezone'),
     url(r'^api/add_comment/$', 'add_comment', name='add_comment'),
+    url(r'^show_learn_links/$', 'show_learn_links', name='show_learn_links'),
+    url(r'^show_check_links/$', 'show_check_links', name='show_check_links'),
+    url(r'^add_link/$', 'add_link', name='add_link'),
+    url(r'^api/delete_link/$', 'delete_link', name='delete_link'),
+    url(r'^api/like_dislike/$', 'like_dislike', name='like_dislike'),
     url(r'^$', 'get_home'),
 )
