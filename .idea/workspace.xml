@@ -2,33 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2f73f686-0d28-4ee5-824a-233ea38e9d5b" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/common.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/forms.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/home.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/home.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/home_img.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/jquery.cycle.all.min.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.10.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.11.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.12.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.4.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.5.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.6.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.7.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.8.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img1.9.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/learn_options_img3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/link_specific.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/list.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/main.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/main.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/knowledge_storage/note_options.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main/settings.py" afterPath="$PROJECT_DIR$/main/settings.py" />
     </list>
     <ignored path="mysite.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -81,8 +55,8 @@
       <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.6782124">
-              <caret line="141" column="0" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.4178771">
+              <caret line="43" column="23" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -227,66 +201,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="KnowledgeStorage" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KnowledgeStorage" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KnowledgeStorage" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="static" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KnowledgeStorage" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KnowledgeStorage" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="my_storage" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KnowledgeStorage" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KnowledgeStorage" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KnowledgeStorage" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="KnowledgeStorage" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -620,7 +534,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2228145" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1059,8 +973,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.6782124">
-          <caret line="141" column="0" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.4178771">
+          <caret line="43" column="23" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="23" />
           <folding />
         </state>
       </provider>

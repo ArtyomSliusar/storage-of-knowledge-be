@@ -35,10 +35,11 @@ LOGIN_REDIRECT_URL = ('/home/')
 LOGIN_URL = '/login/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['DJANGO_SECURITY_KEY']
+with open('../secret_key.txt') as f:
+    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # TEMPLATE_DEBUG = True
 
