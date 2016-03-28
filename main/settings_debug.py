@@ -1,9 +1,7 @@
 """
 Django settings for KnowledgeStorage project.
-
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
-
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
@@ -40,25 +38,15 @@ with open('secret_keys.txt') as f:
     SECRET_KEY = secret_info[0]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-# SESSION SECURE
-SESSION_COOKIE_SECURE = True
-
-# COOKIES
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = True
-
-SECURE_BROWSER_XSS_FILTER = True
-
-SECURE_CONTENT_TYPE_NOSNIFF = True
+DEBUG = True
 
 # TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = []
 
 
 # Application definition
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,7 +66,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     'my_storage.middleware.timezone_middleware.TimezoneMiddleware',
 )
 
@@ -88,6 +75,9 @@ WSGI_APPLICATION = 'main.wsgi.application'
 
 
 # Database
+# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
+
+
 DATABASES = {
     'default': {
         'NAME': 'KnowledgeStorage',
@@ -101,6 +91,7 @@ DATABASES = {
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -130,7 +121,6 @@ SERVER_EMAIL = EMAIL_HOST_USER
 
 # Static files settings:
 STATIC_URL = '/static/'
-STATIC_ROOT = '/static/'
 
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -146,6 +136,6 @@ AUTH_PROFILE_MODULE = "my_storage.UserProfile"
 
 # WYSIWYG settings:
 DJANGO_WYSIWYG_FLAVOR = 'ckeditor'  # Requires you to also place the ckeditor files here:
-# DJANGO_WYSIWYG_MEDIA_URL = STATIC_URL + "ckeditor/"
+DJANGO_WYSIWYG_MEDIA_URL = STATIC_URL + "ckeditor/"
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
