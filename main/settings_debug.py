@@ -38,7 +38,7 @@ with open('secret_keys.txt') as f:
     SECRET_KEY = secret_info[0]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # TEMPLATE_DEBUG = True
@@ -125,7 +125,7 @@ ADMINS = (('artyomsliusar', 'artyomsliusar@gmail.com'),)
 
 # Static files settings:
 STATIC_URL = '/static/'
-STATIC_ROOT = 'e:\\Work_files\\KnowledgeStorage\\static\\'
+STATIC_ROOT = '/static/'
 
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",

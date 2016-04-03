@@ -1,5 +1,5 @@
 """
-Django settings for KnowledgeStorage project.
+Django settings for project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
@@ -31,34 +31,22 @@ TEMPLATES = [
     },
 ]
 
-LOGIN_REDIRECT_URL = ('/home/')
-LOGIN_URL = '/login/'
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# --- SECURITY CONFIGURATION --- :
 with open('secret_keys.txt') as f:
     secret_info = f.read().split()
     SECRET_KEY = secret_info[0]
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# SESSION SECURE
 SESSION_COOKIE_SECURE = True
-
-# COOKIES
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
-
 SECURE_BROWSER_XSS_FILTER = True
-
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
-
-# Application definition
+# --- APPLICATION CONFIGURATION --- :
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -84,81 +72,65 @@ MIDDLEWARE_CLASSES = (
     'django_requestlogging.middleware.LogSetupMiddleware',
 )
 
-ROOT_URLCONF = 'main.urls'
 
-WSGI_APPLICATION = 'main.wsgi.application'
-
-
-# Database
+# --- DATABASE CONFIGURATION --- :
 DATABASES = {
     'default': {
-        'NAME': 'KnowledgeStorage',
+        'NAME': 'storageo_knowledge',
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'USER': 'root',
+        'HOST': 'mysql.rx-name.ua',
+        # 'PORT': '3306',
+        'USER': 'storageo_root',
         'PASSWORD': secret_info[1],
     }
 }
 
-# Internationalization
+
+# --- INTERNATIONALIZATION --- :
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
-# Email settings:
+# EMAIL CONFIGURATION:
 EMAIL_USE_TLS = True
-
 EMAIL_HOST = 'smtp.gmail.com'
-
 EMAIL_PORT = 587
-
 EMAIL_HOST_USER = 'StorageOfKnowledge@gmail.com'
-
 EMAIL_HOST_PASSWORD = secret_info[2]
-
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
 SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
-ADMINS = (('artyomsliusar', 'artyomsliusar@gmail.com'),)
-
-
-# Static files settings:
+# --- STATIC CONFIGURATION --- :
 STATIC_URL = '/static/'
-STATIC_ROOT = '/static/'
-
+STATIC_ROOT = '/home/storageo/domains/storageofknowledge.com/public_html/static/'
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
 )
-
 STATICFILES_DIRS = (
    os.path.join(BASE_DIR, 'static'),
 )
 
 
-AUTH_PROFILE_MODULE = "my_storage.UserProfile"
+# --- MEDIA CONFIGURATION --- :
+MEDIA_ROOT = '/home/storageo/domains/storageofknowledge.com/public_html/media/'
+MEDIA_URL = '/media/'
+ADMIN_MEDIA_PREFIX = '/media/'
 
 
-# WYSIWYG settings:
+# --- WYSIWYG CONFIGURATION --- :
+WSGI_APPLICATION = 'main.wsgi.application'
 DJANGO_WYSIWYG_FLAVOR = 'ckeditor'  # Requires you to also place the ckeditor files here:
 # DJANGO_WYSIWYG_MEDIA_URL = STATIC_URL + "ckeditor/"
-
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-# Logging configuration:
+# --- LOGGING CONFIGURATION --- :
 LOGGING_CONFIG = None
 LOGGING = {
     'version': 1,
@@ -199,6 +171,14 @@ LOGGING = {
         },
     }
 }
-
 import logging.config
 logging.config.dictConfig(LOGGING)
+
+
+# --- DIFFERENT --- :
+AUTH_PROFILE_MODULE = "my_storage.UserProfile"
+ADMINS = (('artyomsliusar', 'artyomsliusar@gmail.com'),)
+ROOT_URLCONF = 'main.urls'
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+LOGIN_REDIRECT_URL = ('/home/')
+LOGIN_URL = '/login/'
