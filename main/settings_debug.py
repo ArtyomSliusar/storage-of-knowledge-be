@@ -38,11 +38,10 @@ with open('secret_keys.txt') as f:
     SECRET_KEY = secret_info[0]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -56,6 +55,7 @@ INSTALLED_APPS = (
     'my_storage',
     'ckeditor',
     'django_wysiwyg',
+    'django_requestlogging',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -67,6 +67,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'my_storage.middleware.timezone_middleware.TimezoneMiddleware',
+    'django_requestlogging.middleware.LogSetupMiddleware',
 )
 
 ROOT_URLCONF = 'main.urls'
@@ -112,15 +113,19 @@ EMAIL_PORT = 587
 
 EMAIL_HOST_USER = 'StorageOfKnowledge@gmail.com'
 
-EMAIL_HOST_PASSWORD = 'S_t%or#ag4eOf9Kn@owl-edge'
+EMAIL_HOST_PASSWORD = secret_info[2]
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 SERVER_EMAIL = EMAIL_HOST_USER
 
 
+ADMINS = (('artyomsliusar', 'artyomsliusar@gmail.com'),)
+
+
 # Static files settings:
 STATIC_URL = '/static/'
+STATIC_ROOT = 'e:\\Work_files\\KnowledgeStorage\\static\\'
 
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -136,6 +141,54 @@ AUTH_PROFILE_MODULE = "my_storage.UserProfile"
 
 # WYSIWYG settings:
 DJANGO_WYSIWYG_FLAVOR = 'ckeditor'  # Requires you to also place the ckeditor files here:
-DJANGO_WYSIWYG_MEDIA_URL = STATIC_URL + "ckeditor/"
+# DJANGO_WYSIWYG_MEDIA_URL = STATIC_URL + "ckeditor/"
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# Logging configuration:
+LOGGING_CONFIG = None
+LOGGING = {
+    'version': 1,
+    'filters': {
+        # Add an unbound RequestFilter.
+        'request': {
+            '()': 'django_requestlogging.logging_filters.RequestFilter',
+        },
+    },
+    'formatters': {
+        'default': {
+            'format': '[%(asctime)s] | %(levelname)s | %(message)s | %(remote_addr)s | %(username)s | %(request_method)s | '
+                      '%(path_info)s | %(server_protocol)s | %(http_user_agent)s'
+        },
+    },
+    'handlers': {
+        # 'mail_admins': {
+        #     'level': 'ERROR',
+        #     'class': 'django.utils.log.AdminEmailHandler',
+        #     'include_html': False,
+        # },
+        'request_handler': {
+                'level': 'WARNING',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': 'logs/django_request.log',
+                'maxBytes': 1024*1024*5,  # 5 MB
+                'backupCount': 5,
+                'filters': ['request'],
+                'formatter': 'default',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['request_handler'],
+            'level': 'WARNING',
+            'filters': ['request'],
+            'propagate': False,
+        },
+    }
+}
+
+import logging.config
+logging.config.dictConfig(LOGGING)

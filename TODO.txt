@@ -1,0 +1,15 @@
+1. Static files upload
+2. Error tempaltes (500)
+3. SSL configuration
+4. Remove some buttons from WYSIWYG 
+5. Site statistic
+
+n. Add "Cancel" button
+n. Add sorting in tables
+n. Delete account
+n. Social networks integration
+n. Search in body of posts
+n. When making a post, show how many characters left
+n. Add README and LICENSE
+n. Email user, if somebody has commented his/her post
+n. Private cabinet
