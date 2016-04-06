@@ -5,6 +5,7 @@
 5. Opne courses in a new tab
 6. When open link, delete target=_blank
 7. When leaving (back) Note editor, ask a confirmation
+8. EMAILS
 
 n. Add "Cancel" button
 n. Add sorting in tables
