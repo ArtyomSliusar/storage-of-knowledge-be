@@ -6,6 +6,7 @@
 6. When open link, delete target=_blank
 7. When leaving (back) Note editor, ask a confirmation
 8. EMAILS
+9. Copy from buffer to comment, do not allow when exceeded
 
 n. Add "Cancel" button
 n. Add sorting in tables
