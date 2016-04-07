@@ -4,3 +4,5 @@
 /secret_keys.txt
 # игнорировать все файлы в каталоге .idea
 .idea/
+# игнорировать файл settings_debug.py находящийся в каталоге main
+main/settings_debug.py

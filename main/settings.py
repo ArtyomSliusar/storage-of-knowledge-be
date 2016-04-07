@@ -21,7 +21,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(os.path.dirname(__file__), 'templates').replace('\\', '/')],
         'APP_DIRS': True,
         'OPTIONS': {
-            'debug': True,
+            'debug': False,
             'context_processors': ["django.template.context_processors.debug",
                                    "django.template.context_processors.request",
                                    "django.contrib.auth.context_processors.auth",
@@ -33,17 +33,17 @@ TEMPLATES = [
 
 
 # --- SECURITY CONFIGURATION --- :
-with open('secret_keys.txt') as f:
+with open(BASE_DIR+'/secret_keys.txt') as f:
     secret_info = f.read().split()
     SECRET_KEY = secret_info[0]
 
 DEBUG = False
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_HTTPONLY = True
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 # --- APPLICATION CONFIGURATION --- :
@@ -79,7 +79,6 @@ DATABASES = {
         'NAME': 'storageo_knowledge',
         'ENGINE': 'django.db.backends.mysql',
         'HOST': 'mysql.rx-name.ua',
-        # 'PORT': '3306',
         'USER': 'storageo_root',
         'PASSWORD': secret_info[1],
     }
@@ -155,7 +154,7 @@ LOGGING = {
         'request_handler': {
                 'level': 'WARNING',
                 'class': 'logging.handlers.RotatingFileHandler',
-                'filename': 'logs/django_request.log',
+                'filename': BASE_DIR+'/logs/django_request.log',
                 'maxBytes': 1024*1024*5,  # 5 MB
                 'backupCount': 5,
                 'filters': ['request'],
@@ -179,6 +178,6 @@ logging.config.dictConfig(LOGGING)
 AUTH_PROFILE_MODULE = "my_storage.UserProfile"
 ADMINS = (('artyomsliusar', 'artyomsliusar@gmail.com'),)
 ROOT_URLCONF = 'main.urls'
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['.storageofknowledge.com', '194.54.81.46']
 LOGIN_REDIRECT_URL = ('/home/')
 LOGIN_URL = '/login/'

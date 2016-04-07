@@ -1,5 +1,5 @@
 """
-Django settings for KnowledgeStorage project.
+Django settings for project.
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
 For the full list of settings and their values, see
@@ -39,6 +39,12 @@ with open('secret_keys.txt') as f:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_HTTPONLY = True
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # TEMPLATE_DEBUG = True
@@ -77,11 +83,9 @@ WSGI_APPLICATION = 'main.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
-
 DATABASES = {
     'default': {
-        'NAME': 'KnowledgeStorage',
+        'NAME': 'storageo_knowledge',
         'ENGINE': 'django.db.backends.mysql',
         'HOST': '127.0.0.1',
         'PORT': '3306',
