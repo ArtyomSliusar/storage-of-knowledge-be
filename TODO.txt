@@ -7,6 +7,14 @@
 7. When leaving (back) Note editor, ask a confirmation
 8. EMAILS
 9. Copy from buffer to comment, do not allow when exceeded
+10. Add subjects:
+    Software Testing
+    Java
+    Android
+    Networks and Protocols
+    System Administration (Windows and Linux)
+    Cryptography and Security
+    Machine learning
 
 n. Add "Cancel" button
 n. Add sorting in tables
