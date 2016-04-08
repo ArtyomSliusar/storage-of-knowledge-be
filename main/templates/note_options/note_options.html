@@ -53,7 +53,7 @@
             <h2>It is always a good idea to make notes when you are studying. Store your notes remotely and they will
                 be available anytime and anywhere.</h2>
             <div id="note_img">
-                <img src="http://www.elanorahts-p.schools.nsw.edu.au/documents/24059411/24066464/notes.png" alt="Image not found" onError="this.onerror=null;this.src='{% static 'knowledge_storage/img/learn_options_img3.jpg' %}';" />
+                <img src="{% static 'knowledge_storage/img/learn_options_img3.jpg' %}" alt="Image not found">
             </div>
             <div id="notes">
                 <form action="{% url 'search_notes' %}" method="GET">
