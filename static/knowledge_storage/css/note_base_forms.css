@@ -80,7 +80,7 @@ body {
     width:100%;
     height:30px;
 }
-.smart-form .button {
+.smart-form #save_button {
     background-color: #9DC45F;
     border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -90,7 +90,7 @@ body {
     color: #FFF;
     text-shadow: 1px 1px 1px #949494;
 }
-.smart-form .button:hover {
+.smart-form #save_button:hover {
     background-color:#80A24A;
 }
 

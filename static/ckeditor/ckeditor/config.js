@@ -9,4 +9,5 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.uiColor = '#AADC6E';
     config.height = 200;
     config.extraPlugins = 'autogrow,fixed';
+    config.removeButtons = 'Flash';
 };

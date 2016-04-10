@@ -50,7 +50,7 @@
                   {% for link in links %}
                       <tbody>
                           <tr id="{{ link.id|escape }}">
-                              <td><a class="link_topic" href="javascript:" onclick="window.open('{{ link.link|escape }}');" target="_blank">{{ link.link_name|escape }}</a></td>
+                              <td><a class="link_topic" href="javascript:" onclick="window.open('{{ link.link|escape }}');">{{ link.link_name|escape }}</a></td>
                               <td class="author">{{ link.user|escape }}</td>
                               <td>{{ link.date|date:"N j, Y H:i:s" }}</td>
                               {% if link.like_pressed %}

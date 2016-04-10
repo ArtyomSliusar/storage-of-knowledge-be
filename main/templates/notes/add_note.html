@@ -4,7 +4,7 @@
     <form action="./?next={{ redirect_to }}" method="POST" class="smart-form">
         <h1>Add note</h1>
         {{ form.as_p }}
-        <p><input type="submit" value="Save" class="button"></p>
+        <p><input type="submit" value="Save" id="save_button"></p>
         {% csrf_token %}
     </form>
 {% endblock %}

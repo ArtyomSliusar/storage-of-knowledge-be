@@ -1,13 +1,9 @@
 1. Error tempaltes (500)
 2. SSL configuration
-3. Remove some buttons from WYSIWYG 
-4. Site statistic
-5. Opne courses in a new tab
-6. When open link, delete target=_blank
-7. When leaving (back) Note editor, ask a confirmation
-8. EMAILS
-9. Copy from buffer to comment, do not allow when exceeded
-10. Add subjects?
+3. Site statistic
+4. Copy from buffer to comment, do not allow when exceeded
+5. Add subjects?
+6. Allow to add links/notes with multiple tags
 
 n. Add "Cancel" button
 n. Add sorting in tables
