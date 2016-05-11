@@ -4,6 +4,7 @@
 4. Copy from buffer to comment, do not allow when exceeded
 5. Add subjects?
 6. Allow to add links/notes with multiple tags
+7. Add mathematics subject
 
 n. Add "Cancel" button
 n. Add sorting in tables
