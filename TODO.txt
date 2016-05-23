@@ -5,6 +5,7 @@
 5. Add subjects? (with moderation)
 6. Allow to add links/notes with multiple tags
 7. Add mathematics subject
+8. User email confirmation
 
 n. Add "Cancel" button
 n. Add sorting in tables
