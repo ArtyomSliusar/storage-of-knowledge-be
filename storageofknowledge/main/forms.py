@@ -2,7 +2,7 @@ __author__ = 'Artem Sliusar'
 
 
 from django import forms
-from models import Notes, Links
+from .models import Notes, Links
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.forms import modelform_factory

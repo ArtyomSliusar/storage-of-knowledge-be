@@ -10,8 +10,8 @@ import django_wysiwyg
 from django.utils import timezone
 from django.db.models import Q
 from django.shortcuts import render_to_response
-from my_storage.models import Notes, Comments, TypeTable, Links, Subjects, LikesDislikes
-from my_storage.forms import ContactForm, UserForm, SearchNotesForm, NoteForm, EditUserForm, LinkForm
+from .models import Notes, Comments, TypeTable, Links, Subjects, LikesDislikes
+from .forms import ContactForm, UserForm, SearchNotesForm, NoteForm, EditUserForm, LinkForm
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
