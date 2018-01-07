@@ -1,0 +1,11 @@
+django
+django-ckeditor
+django-requestlogging
+django-configurations
+django-dotenv
+django-wysiwyg
+html5lib
+Pillow
+pytz
+six
+wheel
