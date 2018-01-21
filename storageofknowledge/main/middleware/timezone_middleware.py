@@ -11,13 +11,18 @@ class TimezoneMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        return self.get_response(request)
+        # Code to be executed for each request before
+        # the view (and later middleware) are called.
+        self._process_timezone(request)
+        response = self.get_response(request)
+        # Code to be executed for each request/response after
+        # the view is called.
+        return response
 
-    def process_request(self, request):
+    def _process_timezone(self, request):
         tzname = None
         if request.user.is_authenticated():
             user_profile = request.user.profile
             tzname = user_profile.time_zone
         if tzname:
             timezone.activate(pytz.timezone(tzname))
-

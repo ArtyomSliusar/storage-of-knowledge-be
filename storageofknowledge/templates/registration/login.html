@@ -8,11 +8,11 @@
 
 {% block content %}
     <h1 class="register-title">Login</h1>
-    <form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="register">
+    <form method="post" action="{% url 'login' %}" class="register">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Login" class="register-button"/>
         <input type="hidden" name="next" value="{{ next }}" />
-        <p><a href="{% url 'reset_password' %}">Forgot your password?</a></p>
+        <p><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
     </form>
 {% endblock %}

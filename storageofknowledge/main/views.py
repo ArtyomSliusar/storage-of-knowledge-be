@@ -1,6 +1,5 @@
 
 # TODO: redo work with comments (new model)
-# TODO: difference between "render_to_response" and "HttpResponseRedirect" and "render" and "reverse" ...
 # TODO: check if note exist before edit/delete/show ...
 
 
@@ -9,7 +8,7 @@ import pytz
 import django_wysiwyg
 from django.utils import timezone
 from django.db.models import Q
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from .models import Notes, Comments, TypeTable, Links, Subjects, LikesDislikes
 from .forms import ContactForm, UserForm, SearchNotesForm, NoteForm, EditUserForm, LinkForm
 from django.core.mail import send_mail
@@ -67,9 +66,9 @@ def search_notes(request):
 
         topic_results = get_likes_dislikes(topic_results, type_id, user)
 
-    return render_to_response("note_options/note_options.html", {'form': form, "topic_results": topic_results,
+    return render(request, "note_options/note_options.html", {'form': form, "topic_results": topic_results,
                                                                  "body_results": body_results, "query": True,
-                                                                 'user': user, 'type_id': type_id}, RequestContext(request))
+                                                                 'user': user, 'type_id': type_id})
 
 
 @login_required
@@ -90,7 +89,7 @@ def add_note(request):
             return HttpResponseRedirect(redirect_to, RequestContext(request))
     else:
         form = NoteForm()
-    return render_to_response('notes/add_note.html', {'form': form, 'redirect_to': redirect_to}, RequestContext(request))
+    return render(request, 'notes/add_note.html', {'form': form, 'redirect_to': redirect_to})
 
 
 @login_required
@@ -115,7 +114,7 @@ def edit_note(request):
             return HttpResponseRedirect('/show_note/?id={}'.format(note_id), RequestContext(request))
     else:
         form = NoteForm(instance=note)
-    return render_to_response('notes/edit_note.html', {'form': form, 'note_id': note_id, 'error': error}, RequestContext(request))
+    return render(request, 'notes/edit_note.html', {'form': form, 'note_id': note_id, 'error': error})
 
 
 @login_required
@@ -134,7 +133,7 @@ def delete_note(request):
         return HttpResponseRedirect('/search_notes/', RequestContext(request))
     else:
         error = 'This note is private, only author can delete this note.'
-        return render_to_response('notes/show_note.html', {'note': note, 'error': error, 'options': options}, RequestContext(request))
+        return render(request, 'notes/show_note.html', {'note': note, 'error': error, 'options': options})
 
 
 def show_note(request):
@@ -166,9 +165,9 @@ def show_note(request):
                     note = ''
         except ObjectDoesNotExist:
             error = 'Note not found.'
-    return render_to_response('notes/show_note.html', {'note': note, 'error': error, 'options': options,
+    return render(request, 'notes/show_note.html', {'note': note, 'error': error, 'options': options,
                                                        'is_auth_user': is_auth_user, 'type_id': type_id,
-                                                       'comments': comments}, RequestContext(request))
+                                                       'comments': comments})
 
 
 def add_comment(request):
@@ -201,15 +200,15 @@ def add_comment(request):
 
 
 def get_home(request):
-    return render_to_response("home/home.html", RequestContext(request))
+    return render(request, "home/home.html")
 
 
 def learn_options(request):
-    return render_to_response("learn_options/learn_options.html", RequestContext(request))
+    return render(request, "learn_options/learn_options.html")
 
 
 def check_options(request):
-    return render_to_response("check_options/check_options.html", RequestContext(request))
+    return render(request, "check_options/check_options.html")
 
 
 def note_options(request):
@@ -217,7 +216,7 @@ def note_options(request):
     """ Function represents to user special form to search for notes. """
 
     form = SearchNotesForm()
-    return render_to_response("note_options/note_options.html", {'form': form}, RequestContext(request))
+    return render(request, "note_options/note_options.html", {'form': form})
 
 
 def get_topics(request):
@@ -286,11 +285,10 @@ def register(request):
             login(request, new_user)
             messages.info(request, "Thanks for registration.")
             messages.info(request, "User '{}' is logged in.".format(username))
-            return render_to_response('timezone/timezone.html', {'timezones': pytz.common_timezones, 'redirect_to': redirect_to},
-                                      RequestContext(request))
+            return render(request, 'timezone/timezone.html', {'timezones': pytz.common_timezones, 'redirect_to': redirect_to})
     else:
         form = UserForm()
-    return render_to_response('register/register.html', {'form': form, 'redirect_to': redirect_to}, RequestContext(request))
+    return render(request, 'register/register.html', {'form': form, 'redirect_to': redirect_to})
 
 
 @login_required
@@ -309,11 +307,10 @@ def edit_profile(request):
             edited_user = authenticate(username=username, password=password)
             login(request, edited_user)
             messages.info(request, "User '{}' is logged in.".format(username))
-            return render_to_response('timezone/timezone.html', {'timezones': pytz.common_timezones, 'redirect_to': redirect_to},
-                                      RequestContext(request))
+            return render(request, 'timezone/timezone.html', {'timezones': pytz.common_timezones, 'redirect_to': redirect_to})
     else:
         form = EditUserForm(instance=request.user)
-    return render_to_response('register/edit_profile.html', {'form': form, 'redirect_to': redirect_to}, RequestContext(request))
+    return render(request, 'register/edit_profile.html', {'form': form, 'redirect_to': redirect_to})
 
 
 @login_required
@@ -328,8 +325,7 @@ def set_user_timezone(request):
         user_profile.save()
         return HttpResponseRedirect(redirect_to, RequestContext(request))
     else:
-        return render_to_response('timezone/timezone.html', {'timezones': pytz.common_timezones, 'redirect_to': redirect_to},
-                                  RequestContext(request))
+        return render(request, 'timezone/timezone.html', {'timezones': pytz.common_timezones, 'redirect_to': redirect_to})
 
 
 def contact(request):
@@ -351,7 +347,7 @@ def contact(request):
             return HttpResponseRedirect(redirect_to, RequestContext(request))
     else:
         form = ContactForm(user_email=user_email)
-    return render_to_response('contact/contact.html', {'form': form, 'redirect_to': redirect_to}, RequestContext(request))
+    return render(request, 'contact/contact.html', {'form': form, 'redirect_to': redirect_to})
 
 
 def show_links(request, type, back_address):
@@ -371,8 +367,8 @@ def show_links(request, type, back_address):
         user = request.user
         user_name = user.username
     links = get_likes_dislikes(links, type_id, user)
-    return render_to_response('links/show_links.html', {'links': links, 'user': user_name, 'subject_id': subject_id,
-                                                         'type_id': type_id, 'back_address': back_address}, RequestContext(request))
+    return render(request, 'links/show_links.html', {'links': links, 'user': user_name, 'subject_id': subject_id,
+                                                         'type_id': type_id, 'back_address': back_address})
 
 
 def get_likes_dislikes(resources, type_id, user):
@@ -424,8 +420,7 @@ def add_link(request):
             return HttpResponseRedirect(redirect_to+'?s_id={}'.format(subject_id), RequestContext(request))
     else:
         form = LinkForm()
-    return render_to_response('links/add_link.html', {'form': form, 'redirect_to': redirect_to+'&s_id={0}&t_id={1}'.format(subject_id, type_id)},
-                              RequestContext(request))
+    return render(request, 'links/add_link.html', {'form': form, 'redirect_to': redirect_to+'&s_id={0}&t_id={1}'.format(subject_id, type_id)})
 
 
 def delete_link(request):
@@ -500,4 +495,3 @@ def like_dislike(request):
         data = json.dumps(res)
         mimetype = 'application/json'
         return HttpResponse(data, mimetype)
-

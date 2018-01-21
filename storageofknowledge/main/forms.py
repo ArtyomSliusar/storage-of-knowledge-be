@@ -50,6 +50,7 @@ class LinkForm(ModelForm):
             raise forms.ValidationError(u'Incorrect url format')
 
 
+# TODO: check closer
 class SearchNotesForm(ModelForm):
 
     class Meta:
@@ -81,8 +82,8 @@ class UserForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if email:
-            same_email_count = User.objects.filter(email=email).count()
-            if same_email_count:
+            email_exists = User.objects.filter(email=email).exists()
+            if email_exists:
                 raise forms.ValidationError(u'User with this email address is already registered.')
             return email
 
@@ -98,8 +99,8 @@ class EditUserForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         initial_username = self.initial['username']
-        same_email_count = User.objects.filter(email=email).exclude(username=initial_username).count()
-        if email and same_email_count:
+        email_exists = User.objects.filter(email=email).exclude(username=initial_username).exists()
+        if email and email_exists:
             raise forms.ValidationError(u'User with this email address is already registered.')
         return email
 

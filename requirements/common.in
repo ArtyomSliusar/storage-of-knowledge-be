@@ -1,10 +1,10 @@
 django
 django-ckeditor
-django-requestlogging
+django-request-logging
 django-configurations
 django-dotenv
 django-wysiwyg
-html5lib
+html5lib<0.99999999
 Pillow
 pytz
 six

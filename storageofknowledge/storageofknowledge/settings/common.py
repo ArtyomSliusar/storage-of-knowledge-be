@@ -39,7 +39,7 @@ class CommonSettings(Configuration):
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
         # third party
-        'django_requestlogging.middleware.LogSetupMiddleware',
+        'request_logging.middleware.LoggingMiddleware',
         # custom exception handler
         'main.middleware.timezone_middleware.TimezoneMiddleware',
     ]
@@ -66,13 +66,16 @@ class CommonSettings(Configuration):
         },
     ]
 
-    WSGI_APPLICATION = 'storageofknowledge.wsgi.application'
-    DJANGO_WYSIWYG_FLAVOR = 'ckeditor'  # Requires you to also place the ckeditor files here:
-    # DJANGO_WYSIWYG_MEDIA_URL = STATIC_URL + "ckeditor/"
-    CKEDITOR_UPLOAD_PATH = "uploads/"
+    # Static files (CSS, JavaScript, Images)
+    STATIC_URL = '/static/'
 
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+    WSGI_APPLICATION = 'storageofknowledge.wsgi.application'
+    DJANGO_WYSIWYG_FLAVOR = 'ckeditor'  # Requires you to also place the ckeditor files here:
+    DJANGO_WYSIWYG_MEDIA_URL = STATIC_URL + "ckeditor/"
+    CKEDITOR_UPLOAD_PATH = "uploads/"
 
     # Password validation
     # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -98,47 +101,3 @@ class CommonSettings(Configuration):
     USE_I18N = True
     USE_L10N = True
     USE_TZ = True
-
-    # --- LOGGING CONFIGURATION --- :
-    LOGGING_CONFIG = None
-    LOGGING = {
-        'version': 1,
-        'filters': {
-            # Add an unbound RequestFilter.
-            'request': {
-                '()': 'django_requestlogging.logging_filters.RequestFilter',
-            },
-        },
-        'formatters': {
-            'default': {
-                'format': '[%(asctime)s] | %(levelname)s | %(message)s | %(remote_addr)s | %(username)s | %(request_method)s | '
-                          '%(path_info)s | %(server_protocol)s | %(http_user_agent)s'
-            },
-        },
-        'handlers': {
-            # 'mail_admins': {
-            #     'level': 'ERROR',
-            #     'class': 'django.utils.log.AdminEmailHandler',
-            #     'include_html': False,
-            # },
-            'request_handler': {
-                'level': 'WARNING',
-                'class': 'logging.handlers.RotatingFileHandler',
-                'filename': PROJECT_ROOT_DIR + '/log/django_request.log',
-                'maxBytes': 1024 * 1024 * 5,  # 5 MB
-                'backupCount': 5,
-                'filters': ['request'],
-                'formatter': 'default',
-            },
-        },
-        'loggers': {
-            'django.request': {
-                'handlers': ['request_handler'],
-                'level': 'WARNING',
-                'filters': ['request'],
-                'propagate': False,
-            },
-        }
-    }
-    import logging.config
-    logging.config.dictConfig(LOGGING)
