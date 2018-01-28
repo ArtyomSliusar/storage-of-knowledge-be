@@ -1,13 +1,13 @@
-add docker
-add elasticsearch
-1. Error tempaltes (500)
-2. SSL configuration
-3. Site statistic
-4. Copy from buffer to comment, do not allow when exceeded
-5. Add subjects? (with moderation)
-6. Allow to add links/notes with multiple tags
-7. Add mathematics subject
-8. User email confirmation
+Add docker
+Add elasticsearch
+Error templates (500)
+SSL configuration
+Site statistic
+Copy from buffer to comment, do not allow when exceeded
+Add subjects? (with moderation)
+Allow to add links/notes with multiple tags
+Add mathematics subject
+User email confirmation
 
 n. Add "Cancel" button
 n. Add sorting in tables

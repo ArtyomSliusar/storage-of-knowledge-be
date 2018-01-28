@@ -2,7 +2,7 @@ __author__ = 'Artem Sliusar'
 
 
 from django import forms
-from .models import Notes, Links
+from .models import Notes, Links, Subjects
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.forms import modelform_factory
@@ -29,7 +29,8 @@ class ContactForm(forms.Form):
     sender = forms.EmailField(required=False)
 
 
-NoteForm = modelform_factory(Notes, fields=("subject", "topic", "body", "private"))
+NoteForm = modelform_factory(Notes,
+                             fields=("subject", "topic", "body", "private"))
 
 
 class LinkForm(ModelForm):
@@ -42,33 +43,21 @@ class LinkForm(ModelForm):
 
     def clean_link(self):
         url = self.cleaned_data.get('link')
-        validate = URLValidator()
+        validator = URLValidator()
         try:
-            validate(url)
-            return url
+            validator(url)
         except forms.ValidationError:
             raise forms.ValidationError(u'Incorrect url format')
+        return url
 
 
-# TODO: check closer
-class SearchNotesForm(ModelForm):
-
-    class Meta:
-        model = Notes
-        fields = ['subject', 'topic']
-
-    def remove_error(self, field, message='This field is required.'):
-        if message in self.errors[field][0] and len(self.errors[field]) == 1:
-            del self.errors[field]
+class SearchNotesForm(forms.Form):
+    subject = forms.ModelChoiceField(queryset=Subjects.objects.all(), required=False)
+    topic = forms.CharField(max_length=100, required=False)
 
     def __init__(self, *args, **kwargs):
         super(SearchNotesForm, self).__init__(*args, **kwargs)
         self.fields['subject'].empty_label = "All"
-        if self.errors:
-            if 'subject' in self.errors:
-                self.remove_error('subject')
-            if 'topic' in self.errors:
-                self.remove_error('topic')
 
 
 class UserForm(UserCreationForm):
@@ -85,7 +74,7 @@ class UserForm(UserCreationForm):
             email_exists = User.objects.filter(email=email).exists()
             if email_exists:
                 raise forms.ValidationError(u'User with this email address is already registered.')
-            return email
+        return email
 
 
 class EditUserForm(UserCreationForm):

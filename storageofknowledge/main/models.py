@@ -16,7 +16,7 @@ class Notes(models.Model):
     subject = models.ForeignKey(Subjects)
     user = models.ForeignKey(User)
     private = models.BooleanField(default=0)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.topic
@@ -35,7 +35,7 @@ class Links(models.Model):
     subject = models.ForeignKey(Subjects)
     user = models.ForeignKey(User)
     type = models.ForeignKey(TypeTable)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.link
@@ -57,7 +57,7 @@ class Comments(models.Model):
     comment = models.CharField(max_length=2000)
     resource_id = models.IntegerField()
     type = models.ForeignKey(TypeTable)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.comment

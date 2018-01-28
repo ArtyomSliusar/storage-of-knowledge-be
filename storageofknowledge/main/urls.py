@@ -30,5 +30,5 @@ urlpatterns = [
     url(r'api/get_topics/', views.get_topics, name='get_topics'),
     url(r'api/delete_link/$', views.delete_link, name='delete_link'),
     url(r'api/like_dislike/$', views.like_dislike, name='like_dislike'),
-    # url(r'^$', views.get_home),
+    url(r'$', views.get_home),
 ]
