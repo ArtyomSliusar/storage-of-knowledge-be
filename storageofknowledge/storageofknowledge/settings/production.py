@@ -18,7 +18,7 @@ class ProductionSettings(CommonSettings):
     # Database
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': 'storageofknowledge',
             'USER': DB_USER,
             'PASSWORD': DB_PASSWORD,
