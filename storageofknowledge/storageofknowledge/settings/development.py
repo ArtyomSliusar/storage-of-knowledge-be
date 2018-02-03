@@ -19,7 +19,7 @@ class DevelopmentSettings(CommonSettings):
     }
 
     # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = values.SecretValue()
+    SECRET_KEY = values.SecretValue(environ_name="SECRET_KEY")
 
     # Email
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

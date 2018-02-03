@@ -11,9 +11,9 @@ class ProductionSettings(CommonSettings):
     ALLOWED_HOSTS = ['.storageofknowledge.com']
 
     # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = values.SecretValue()
-    DB_USER = values.SecretValue()
-    DB_PASSWORD = values.SecretValue()
+    SECRET_KEY = values.SecretValue(environ_name="SECRET_KEY")
+    DB_USER = values.SecretValue(environ_name="DB_USER")
+    DB_PASSWORD = values.SecretValue(environ_name="DB_PASSWORD")
 
     # Database
     DATABASES = {
@@ -30,7 +30,7 @@ class ProductionSettings(CommonSettings):
     # Email
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_HOST_PASSWORD = values.SecretValue()
+    EMAIL_HOST_PASSWORD = values.SecretValue(environ_name="EMAIL_HOST_PASSWORD")
     EMAIL_HOST_USER = 'StorageOfKnowledge@gmail.com'
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
