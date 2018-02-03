@@ -24,7 +24,6 @@ class CommonSettings(Configuration):
         # Third party
         'ckeditor',
         'django_wysiwyg',
-        'django_requestlogging',
         # Local apps
         'main.apps.MainConfig'
     ]
