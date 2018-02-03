@@ -10,7 +10,7 @@ urlpatterns = [
     url('register/', views.register, name='register'),
     url('edit_profile/', views.edit_profile, name='edit_profile'),
     url('login/$', auth_views.login, name='login'),
-    url('logout/$', views.logout, {'next_page': '/'}, name='logout'),
+    url('logout/$', views.user_logout, name='logout'),
     url(r'contact/$', views.contact, name='contact'),
     url('accounts/', include('django.contrib.auth.urls')),
     url(r'learn_options/$', views.learn_options, name='learn_options'),

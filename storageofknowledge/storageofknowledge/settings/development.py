@@ -11,7 +11,6 @@ class DevelopmentSettings(CommonSettings):
     ALLOWED_HOSTS = ['*']
 
     # Database
-    # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -27,44 +26,57 @@ class DevelopmentSettings(CommonSettings):
 
     # --- LOGGING CONFIGURATION --- :
     # TODO: configure logging
-    LOGGING_CONFIG = None
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
         'filters': {
+            'require_debug_true': {
+                '()': 'django.utils.log.RequireDebugTrue',
+            },
         },
         'formatters': {
-            'default': {
+            'verbose': {
                 'format': '[%(asctime)s] | %(levelname)s | %(message)s | '
                           '%(remote_addr)s | %(username)s | %(request_method)s | '
                           '%(path_info)s | %(server_protocol)s | %(http_user_agent)s'
             },
+            'simple': {
+                'format': '%(levelname)s {%(name)s} %(message)s'
+            },
+            'timestamped': {
+                'format': '%(levelname)s %(asctime)s {%(name)s} %(message)s'
+            },
         },
         'handlers': {
-            # 'mail_admins': {
-            #     'level': 'ERROR',
-            #     'class': 'django.utils.log.AdminEmailHandler',
-            #     'include_html': False,
-            # },
-            # 'request_handler': {
-            #     'level': 'WARNING',
-            #     'class': 'logging.handlers.RotatingFileHandler',
-            #     'filename': PROJECT_ROOT_DIR + '/log/django_request.log',
-            #     'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            #     'backupCount': 5,
-            #     'filters': ['request'],
-            #     'formatter': 'default',
-            # },
+            'req_res_dump_file': {
+                'level': 'DEBUG',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': CommonSettings.PROJECT_ROOT_DIR + '/log/django_request.log',
+                'maxBytes': 1024 * 1024 * 10,  # 10 MB
+                'formatter': 'timestamped',
+            },
             'console': {
+                'level': 'DEBUG',
+                'filters': ['require_debug_true'],
                 'class': 'logging.StreamHandler',
+                'formatter': 'timestamped'
             },
         },
         'loggers': {
             'django.request': {
-                'handlers': ['console'],
+                'handlers': ['req_res_dump_file'],
                 'level': 'DEBUG',
-                # 'filters': ['request'],
                 'propagate': False,
+            },
+            'django': {
+                'handlers': ['console'],
+                'propagate': False,
+                'level': 'INFO'
+            },
+            'django.server': {
+                'handlers': ['console'],
+                'propagate': False,
+                'level': 'INFO'
             },
         }
     }
