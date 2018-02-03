@@ -49,3 +49,21 @@ python manage.py createsuperuser
 ```
 python manage.py runserver
 ```
+
+### Production deploy
+
+- Run uWSGI server and check output
+```
+screen -S storage_uwsgi uwsgi --ini deploy/production/uwsgi.ini
+'Ctrl+A D' to return
+```
+
+- Copy nginx config
+```
+cp ~/StorageOfKnowledge/deploy/production/nginx.conf /etc/nginx/sites-available/storageofknowledge.conf
+```
+
+- Restart nginx
+```
+/etc/init.d/nginx restart
+```
