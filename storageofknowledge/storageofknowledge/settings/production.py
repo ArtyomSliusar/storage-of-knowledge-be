@@ -76,7 +76,7 @@ class ProductionSettings(CommonSettings):
             },
             'django': {
                 'handlers': ['logfile', 'console'],
-                'level': 'DEBUG',
+                'level': 'INFO',
                 'propagate': False,
             },
         }
