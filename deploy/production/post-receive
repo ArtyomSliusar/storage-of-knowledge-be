@@ -39,7 +39,7 @@ export DEPLOY_APP_ROOT="${DEPLOY_ROOT}/storageofknowledge"
 # This is a list of subdirs to copy to DEPLOY_ROOT
 export DEPLOY_SUBDIRS="storageofknowledge/"
 
-export DEPLOY_STATIC_DIR="${DEPLOY_ROOT}/static_root"
+export DEPLOY_STATIC_DIR="${DEPLOY_ROOT}/static"
 
 # When receiving a new git push, the received branch gets compared to this one.
 # If you do not need this, just add a comment
