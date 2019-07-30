@@ -1,20 +1,28 @@
-Add docker
-Add elasticsearch
-Error templates (500)
-SSL configuration
-Site statistic
-Copy from buffer to comment, do not allow when exceeded
-Add subjects? (with moderation)
-Allow to add links/notes with multiple tags
-Add mathematics subject
-User email confirmation
+New features:
+
+ Internal:
+    - use Django 2.1
+    - use full text search with Elasticsearch
+    - buy SSL certificate
+    - use docker compose
+    - add site monitoring and statistics solution
+    - email user, if somebody has commented his/her note
+
+ UI:
+  - allow to add notes with multiple subjects
+  - private cabinet with delete account option
+  - allow to add subjects? (with moderation)
+  - mobile friendly
+  - update note-form tool
+  - user email confirmation
+  - add reCAPTCHA
+  - add favicon
+  - when making a note, show how many characters left
+
+Bugs:
+- do not allow to copy from buffer to comment, when exceeded
+
 
 n. Add "Cancel" button
 n. Add sorting in tables
-n. Delete account
 n. Social networks integration
-n. Search in body of posts
-n. When making a post, show how many characters left
-n. Add README and LICENSE
-n. Email user, if somebody has commented his/her post
-n. Private cabinet
