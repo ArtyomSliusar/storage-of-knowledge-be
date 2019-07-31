@@ -1,5 +1,6 @@
 django
 django-ckeditor
+django-extensions
 django-request-logging
 django-configurations
 django-dotenv

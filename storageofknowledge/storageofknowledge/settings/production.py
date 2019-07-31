@@ -14,16 +14,19 @@ class ProductionSettings(CommonSettings):
     SECRET_KEY = values.SecretValue()
     DB_USER = values.SecretValue()
     DB_PASSWORD = values.SecretValue()
+    DB_HOST = values.SecretValue()
+    DB_PORT = values.SecretValue()
+    DB_NAME = values.SecretValue()
 
     # Database
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'storageofknowledge',
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': DB_NAME,
             'USER': DB_USER,
             'PASSWORD': DB_PASSWORD,
-            'HOST': 'localhost',
-            'PORT': '',
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
         }
     }
 

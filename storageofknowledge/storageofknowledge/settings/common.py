@@ -22,6 +22,7 @@ class CommonSettings(Configuration):
         'django.contrib.messages',
         'django.contrib.staticfiles',
         # Third party
+        'django_extensions',
         'ckeditor',
         'django_wysiwyg',
         'django_requestlogging',
