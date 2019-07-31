@@ -8,7 +8,7 @@ dotenv.read_dotenv()
 
 
 if __name__ == "__main__":
-    settings_to_use = os.getenv('SETTINGS')
+    settings_to_use = os.getenv('DJANGO_SETTINGS')
 
     os.environ.setdefault(
         'DJANGO_SETTINGS_MODULE',
