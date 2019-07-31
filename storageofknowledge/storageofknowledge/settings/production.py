@@ -35,7 +35,7 @@ class ProductionSettings(CommonSettings):
     DEFAULT_FROM_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
     SERVER_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
 
-    STATIC_ROOT = os.path.join(CommonSettings.BASE_DIR, 'staticfiles')
+    STATIC_ROOT = os.path.join(CommonSettings.BASE_DIR, 'static')
 
     # --- LOGGING CONFIGURATION --- :
     LOGGING = {
