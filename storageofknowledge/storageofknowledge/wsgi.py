@@ -15,7 +15,9 @@ settings_to_use = os.getenv('DJANGO_SETTINGS')
 
 os.environ.setdefault(
     "DJANGO_SETTINGS_MODULE",
-    "storageofknowledge.settings"
+    "storageofknowledge.settings.{settings}".format(
+        settings=settings_to_use
+    )
 )
 
 os.environ.setdefault(
@@ -25,5 +27,5 @@ os.environ.setdefault(
         )
     )
 
-from django.core.wsgi import get_wsgi_application
+from configurations.wsgi import get_wsgi_application
 application = get_wsgi_application()
