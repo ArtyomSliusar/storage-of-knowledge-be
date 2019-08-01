@@ -1,10 +1,7 @@
-__author__ = 'Artem Sliusar'
-
-
+from django.contrib.auth import get_user_model
 from django import forms
 from .models import Notes, Links, Subjects
 from django.forms import ModelForm
-from django.contrib.auth.models import User
 from django.forms import modelform_factory
 from django.core.validators import URLValidator
 from django.contrib.auth.forms import UserCreationForm
@@ -15,6 +12,9 @@ TOPIC_CHOICES = (
     ('bug', 'Bug report'),
     ('suggestion', 'Suggestion'),
     )
+
+
+User = get_user_model()
 
 
 class ContactForm(forms.Form):

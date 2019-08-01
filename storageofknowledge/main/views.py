@@ -14,14 +14,16 @@ from .forms import ContactForm, UserForm, SearchNotesForm, NoteForm, EditUserFor
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.contrib.auth.views import password_reset, password_reset_confirm
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from operator import attrgetter
+
+
+User = get_user_model()
 
 
 def search_notes(request):

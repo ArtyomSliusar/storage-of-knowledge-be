@@ -10,11 +10,22 @@ class DevelopmentSettings(CommonSettings):
 
     ALLOWED_HOSTS = ['*']
 
-    # Database
+    # # Database
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.sqlite3',
+    #         'NAME': os.path.join(CommonSettings.BASE_DIR, 'development.sqlite3'),
+    #     }
+    # }
+
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(CommonSettings.BASE_DIR, 'development.sqlite3'),
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': values.Value(environ_name='DB_NAME'),
+            'USER': values.Value(environ_name='DB_USER'),
+            'PASSWORD': values.Value(environ_name='DB_PASSWORD'),
+            'HOST': values.Value(environ_name='DB_HOST'),
+            'PORT': values.Value(environ_name='DB_PORT'),
         }
     }
 
