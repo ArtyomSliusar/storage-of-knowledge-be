@@ -1,12 +1,13 @@
 New features:
 
  Internal:
-    - use Django 2.1
+    + use Django 2.1
     - use full text search with Elasticsearch
     - buy SSL certificate
     - use docker compose
     - add site monitoring and statistics solution
     - email user, if somebody has commented his/her note
+    + use UUID
 
  UI:
   - allow to add notes with multiple subjects

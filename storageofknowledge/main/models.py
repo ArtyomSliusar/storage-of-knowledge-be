@@ -1,35 +1,42 @@
-from ckeditor.fields import RichTextField
+import uuid
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
+def get_sentinel_user():
+    return get_user_model().objects.get_or_create(username='deleted', email='deleted@example.com')[0]
+
+
 class UserManager(BaseUserManager):
-    """Define a model manager for User model with no username field."""
 
     use_in_migrations = True
 
-    def _create_user(self, email, password, **extra_fields):
-        """Create and save a User with the given email and password."""
+    def _create_user(self, username, email, password, **extra_fields):
+        """
+        Create and save a user with the given username, email, and password.
+        """
         if not email:
             raise ValueError('The given email must be set')
+        if not username:
+            raise ValueError('The given username must be set')
 
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        username = self.model.normalize_username(username)
+        user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, password=None, **extra_fields):
-        """Create and save a regular User with the given email and password."""
+    def create_user(self, username, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(username, email, password, **extra_fields)
 
-    def create_superuser(self, email, password, **extra_fields):
-        """Create and save a SuperUser with the given email and password."""
+    def create_superuser(self, username, email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -38,83 +45,219 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(username, email, password, **extra_fields)
 
 
 class User(AbstractUser):
-    username = None
-    email = models.EmailField(_('email address'), unique=True)
+    """
+    Custom User model with `email` required and other custom fields.
+    """
+    email = models.EmailField(
+        _('email address'),
+        unique=True,
+        error_messages={
+            'unique': _("A user with that email already exists."),
+        },
+    )
     time_zone = models.CharField(max_length=50)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 
     objects = UserManager()
 
 
-class Subjects(models.Model):
+class Subject(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ["name"]
 
-class Notes(models.Model):
+
+class Note(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     topic = models.CharField(max_length=100)
-    body = RichTextField()
-    subject = models.ForeignKey(Subjects)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    body = models.TextField()
+    subjects = models.ManyToManyField(Subject)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     private = models.BooleanField(default=0)
-    date = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.topic
 
     class Meta:
         ordering = ["topic"]
+        unique_together = (
+            ('topic', 'user'),
+        )
 
 
-class TypeTable(models.Model):
-    type_name = models.CharField(max_length=100)
-
-
-class Links(models.Model):
-    link_name = models.CharField(max_length=100)
-    link = models.CharField(max_length=2000)
-    subject = models.ForeignKey(Subjects)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    type = models.ForeignKey(TypeTable)
-    date = models.DateTimeField(auto_now=True)
+class Link(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100)
+    link = models.URLField(max_length=2000)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    subjects = models.ManyToManyField(Subject)
+    private = models.BooleanField(default=0)
 
     def __str__(self):
-        return self.link
+        return self.name
 
     class Meta:
-        ordering = ["link_name"]
+        ordering = ["name"]
+        unique_together = (
+            ('name', 'user'),
+        )
 
 
-class LikesDislikes(models.Model):
-    type = models.ForeignKey(TypeTable)
-    resource_id = models.IntegerField()
-    user = models.ForeignKey(User)
-    like = models.BooleanField(default=0)
-    dislike = models.BooleanField(default=0)
+class NoteLike(models.Model):
+    note = models.ForeignKey(Note, related_name='likes', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "note_like"
+        unique_together = (
+            ('note', 'user'),
+        )
 
 
-class Comments(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+class NoteDislike(models.Model):
+    note = models.ForeignKey(Note, related_name='dislikes', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "note_dislike"
+        unique_together = (
+            ('note', 'user'),
+        )
+
+
+class LinkLike(models.Model):
+    link = models.ForeignKey(Link, related_name='likes', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "link_like"
+        unique_together = (
+            ('link', 'user'),
+        )
+
+
+class LinkDislike(models.Model):
+    link = models.ForeignKey(Link, related_name='dislikes', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "link_dislike"
+        unique_together = (
+            ('link', 'user'),
+        )
+
+
+class Comment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET(get_sentinel_user))
+    note = models.ForeignKey(Note, related_name='comments', on_delete=models.CASCADE)
     comment = models.CharField(max_length=2000)
-    resource_id = models.IntegerField()
-    type = models.ForeignKey(TypeTable)
-    date = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.comment
 
-
-class UserProfile(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    time_zone = models.CharField(max_length=50)
+    class Meta:
+        ordering = ["date_created"]
 
 
-User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+class Book(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    author = models.CharField(max_length=100)
+    subjects = models.ManyToManyField(Subject)
+    body = models.TextField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["title"]
+        unique_together = (
+            ('title', 'user', 'author'),
+        )
+
+
+class Backlog(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["date"]
+        unique_together = (
+            ('title', 'user'),
+        )
+
+
+class Goal(models.Model):
+
+    NOT_STARTED = 'NS'
+    IN_PROGRESS = 'IP'
+    DONE = 'DN'
+
+    STATE_CHOICES = (
+        (NOT_STARTED, 'not started'),
+        (IN_PROGRESS, 'in progress'),
+        (DONE, 'done'),
+    )
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    state = models.CharField(
+        max_length=2,
+        choices=STATE_CHOICES,
+        default=NOT_STARTED,
+    )
+    deadline = models.DateField()
+    notify_before_deadline = models.SmallIntegerField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["state"]
+        unique_together = (
+            ('title', 'user'),
+        )
+
+
+class Course(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    link = models.URLField(max_length=2000)
+    subjects = models.ManyToManyField(Subject)
+    body = models.TextField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["title"]
+        unique_together = (
+            ('title', 'user'),
+        )

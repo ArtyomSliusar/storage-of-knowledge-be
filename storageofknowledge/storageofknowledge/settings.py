@@ -1,14 +1,37 @@
 import os
-from configurations import Configuration
+from configurations import Configuration, values
 
 
-class CommonSettings(Configuration):
+# TODO: finish 12 factor
+class Settings(Configuration):
+
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = values.BooleanValue(False)
+
+    ALLOWED_HOSTS = values.ListValue([])
+
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = values.SecretValue()
+
+    # Database
+    DATABASES = {
+        'default': {
+            'ENGINE': values.Value(environ_name='DB_ENGINE'),
+            'NAME': values.Value(environ_name='DB_NAME'),
+            'USER': values.Value(environ_name='DB_USER'),
+            'PASSWORD': values.Value(environ_name='DB_PASSWORD'),
+            'HOST': values.Value(environ_name='DB_HOST'),
+            'PORT': values.Value(environ_name='DB_PORT'),
+        }
+    }
 
     # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     PROJECT_ROOT_DIR = os.path.dirname(BASE_DIR)
 
     ADMINS = (('artyomsliusar', 'artyomsliusar@gmail.com'),)
+
+    AUTH_USER_MODEL = "main.User"
 
     LOGIN_REDIRECT_URL = ('/home/')
     LOGIN_URL = '/login/'
@@ -16,6 +39,7 @@ class CommonSettings(Configuration):
     # Application definition
     INSTALLED_APPS = [
         # Django apps
+        'django.contrib.admin',
         'django.contrib.auth',
         'django.contrib.contenttypes',
         'django.contrib.sessions',
@@ -23,8 +47,6 @@ class CommonSettings(Configuration):
         'django.contrib.staticfiles',
         # Third party
         'django_extensions',
-        'ckeditor',
-        'django_wysiwyg',
         # Local apps
         'main.apps.MainConfig'
     ]
@@ -35,17 +57,13 @@ class CommonSettings(Configuration):
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
-        # third party
-        'request_logging.middleware.LoggingMiddleware',
         # custom exception handler
         'main.middleware.timezone_middleware.TimezoneMiddleware',
     ]
 
     ROOT_URLCONF = 'storageofknowledge.urls'
-    AUTH_PROFILE_MODULE = "storageofknowledge.UserProfile"
 
     TEMPLATES = [
         {
@@ -73,9 +91,6 @@ class CommonSettings(Configuration):
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
     WSGI_APPLICATION = 'storageofknowledge.wsgi.application'
-    DJANGO_WYSIWYG_FLAVOR = 'ckeditor'  # Requires you to also place the ckeditor files here:
-    DJANGO_WYSIWYG_MEDIA_URL = STATIC_URL + "ckeditor/"
-    CKEDITOR_UPLOAD_PATH = "uploads/"
 
     # Password validation
     # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -101,3 +116,45 @@ class CommonSettings(Configuration):
     USE_I18N = True
     USE_L10N = True
     USE_TZ = True
+
+    # Email
+    EMAIL_BACKEND = values.Value()
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_HOST_PASSWORD = values.Value()
+    EMAIL_HOST_USER = 'StorageOfKnowledge@gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+
+    DEFAULT_FROM_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
+    SERVER_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
+
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+    # --- LOGGING CONFIGURATION --- :
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'mail_admins': {
+                'level': 'ERROR',
+                'class': 'django.utils.log.AdminEmailHandler',
+                'include_html': True,
+            },
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+            }
+        },
+        'loggers': {
+            'django.request': {
+                'handlers': ['mail_admins'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+            'django': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+        }
+    }

@@ -21,8 +21,7 @@ class TimezoneMiddleware(object):
 
     def _process_timezone(self, request):
         tzname = None
-        if request.user.is_authenticated():
-            user_profile = request.user.profile
-            tzname = user_profile.time_zone
+        if request.user.is_authenticated:
+            tzname = request.user.time_zone
         if tzname:
             timezone.activate(pytz.timezone(tzname))
