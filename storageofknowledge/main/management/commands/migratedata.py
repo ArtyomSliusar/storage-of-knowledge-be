@@ -213,15 +213,15 @@ class Command(BaseCommand):
 
         for old_username, old_user_data in old_users.items():
             new_user, created = User.objects.get_or_create(
-                username=old_username,
+                username=old_username
             )
 
             if created:
-                new_user.email = old_user_data['email'],
-                new_user.is_superuser = old_user_data['is_superuser'],
-                new_user.is_staff = old_user_data['is_staff'],
-                new_user.password = old_user_data['password'],
-                new_user.is_active = True,
+                new_user.email = old_user_data['email']
+                new_user.is_superuser = old_user_data['is_superuser']
+                new_user.is_staff = old_user_data['is_staff']
+                new_user.password = old_user_data['password']
+                new_user.is_active = True
                 new_user.time_zone = 'Europe/Kiev'
                 new_user.save(using='default')
             USER_MAP[old_user_data['id']] = new_user.id
