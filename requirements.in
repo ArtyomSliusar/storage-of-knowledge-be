@@ -2,6 +2,8 @@ django==2.1.*
 django-extensions
 django-configurations
 django-dotenv
+djangorestframework
+django-filter
 pytz
 gunicorn
 mysqlclient

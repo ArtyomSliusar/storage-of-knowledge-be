@@ -47,6 +47,8 @@ class Settings(Configuration):
         'django.contrib.staticfiles',
         # Third party
         'django_extensions',
+        'rest_framework',
+        'rest_framework.authtoken',
         # Local apps
         'main.apps.MainConfig'
     ]
@@ -157,4 +159,17 @@ class Settings(Configuration):
                 'propagate': False,
             },
         }
+    }
+
+    REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework.authentication.SessionAuthentication',
+        ),
+        'DEFAULT_PERMISSION_CLASSES': (
+            'rest_framework.permissions.IsAuthenticated',
+        ),
+        'DEFAULT_RENDERER_CLASSES': (
+            'rest_framework.renderers.JSONRenderer',
+        ),
+        'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
     }

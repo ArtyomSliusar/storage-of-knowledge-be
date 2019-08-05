@@ -4,11 +4,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from main.validators import validate_time_zone
+from django.utils.translation import gettext_lazy as _
 
 
 def get_sentinel_user():
-    return get_user_model().objects.get_or_create(username='deleted', email='deleted@example.com')[0]
+    return get_user_model().objects.get_or_create(username='deleted', email='deleted@storageofknowledge.com')[0]
 
 
 class UserManager(BaseUserManager):
@@ -52,14 +53,8 @@ class User(AbstractUser):
     """
     Custom User model with `email` required and other custom fields.
     """
-    email = models.EmailField(
-        _('email address'),
-        unique=True,
-        error_messages={
-            'unique': _("A user with that email already exists."),
-        },
-    )
-    time_zone = models.CharField(max_length=50)
+    email = models.EmailField(_('email address'), unique=True)
+    time_zone = models.CharField(max_length=50, validators=[validate_time_zone], blank=True)
 
     objects = UserManager()
 
@@ -261,3 +256,68 @@ class Course(models.Model):
         unique_together = (
             ('title', 'user'),
         )
+
+# TODO: remove when not needed
+# class Subjects(models.Model):
+#     name = models.CharField(max_length=50)
+#
+#     def __str__(self):
+#         return self.name
+#
+#
+# class Notes(models.Model):
+#     topic = models.CharField(max_length=100)
+#     body = models.TextField()
+#     subject = models.ForeignKey(Subjects, on_delete=models.CASCADE)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     private = models.BooleanField(default=0)
+#     date = models.DateTimeField(auto_now=True)
+#
+#     def __str__(self):
+#         return self.topic
+#
+#     class Meta:
+#         ordering = ["topic"]
+#
+#
+# class TypeTable(models.Model):
+#     type_name = models.CharField(max_length=100)
+#
+#
+# class Links(models.Model):
+#     link_name = models.CharField(max_length=100)
+#     link = models.CharField(max_length=2000)
+#     subject = models.ForeignKey(Subjects, on_delete=models.CASCADE)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     type = models.ForeignKey(TypeTable, on_delete=models.CASCADE)
+#     date = models.DateTimeField(auto_now=True)
+#
+#     def __str__(self):
+#         return self.link
+#
+#     class Meta:
+#         ordering = ["link_name"]
+#
+#
+# class LikesDislikes(models.Model):
+#     type = models.ForeignKey(TypeTable, on_delete=models.CASCADE)
+#     resource_id = models.IntegerField()
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     like = models.BooleanField(default=0)
+#     dislike = models.BooleanField(default=0)
+#
+#
+# class Comments(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     comment = models.CharField(max_length=2000)
+#     resource_id = models.IntegerField()
+#     type = models.ForeignKey(TypeTable, on_delete=models.CASCADE)
+#     date = models.DateTimeField(auto_now=True)
+#
+#     def __str__(self):
+#         return self.comment
+#
+#
+# class UserProfile(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     time_zone = models.CharField(max_length=50)
