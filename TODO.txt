@@ -19,6 +19,8 @@ New features:
   - add reCAPTCHA
   - add favicon
   - when making a note, show how many characters left
+  - add popup for not logged in users (describe functionality)
+  - add notification popups
 
 Bugs:
 - do not allow to copy from buffer to comment, when exceeded

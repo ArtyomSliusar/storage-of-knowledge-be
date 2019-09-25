@@ -1,42 +1,58 @@
+import json
 import os
 from configurations import Configuration, values
 
 
-# TODO: finish 12 factor
-class Settings(Configuration):
+ENVIRONMENT = values.Value(environ_name='ENVIRONMENT')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT_DIR = os.path.dirname(BASE_DIR)
 
+
+def logging_config():
+    """If DJANGO_LOGGING_CONFIG_FILE is not set, default django logging config is used"""
+    var_name = 'LOGGING_CONFIG_FILE'
+
+    if os.environ.get('DJANGO_' + var_name):
+        with open(values.PathValue(environ_name=var_name)) as f:
+            content = f.read()
+            content = content.replace('{project_root}', PROJECT_ROOT_DIR)
+            return json.loads(content)
+
+
+class Settings(Configuration):
+    ADMIN_HEADER_COLOR = values.Value()
+    ADMIN_HEADER_TITLE = "{environment}{title}".format(
+        environment=ENVIRONMENT or '{DJANGO_ENVIRONMENT}',
+        title=values.Value('{DJANGO_ADMIN_HEADER_TITLE}', environ_name='ADMIN_HEADER_TITLE'),
+    )
+    ADMINS = values.SingleNestedListValue([])
+    ALLOWED_HOSTS = values.ListValue([])
+    ANYMAIL = values.DictValue()
+    AUTH_PASSWORD_VALIDATORS = [
+        {
+            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        },
+    ]
+    AUTH_USER_MODEL = "main.User"
+    DATABASES = values.DatabaseURLValue(environ_prefix='DJANGO')
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = values.BooleanValue(False)
-
-    ALLOWED_HOSTS = values.ListValue([])
-
-    # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = values.SecretValue()
-
-    # Database
-    DATABASES = {
-        'default': {
-            'ENGINE': values.Value(environ_name='DB_ENGINE'),
-            'NAME': values.Value(environ_name='DB_NAME'),
-            'USER': values.Value(environ_name='DB_USER'),
-            'PASSWORD': values.Value(environ_name='DB_PASSWORD'),
-            'HOST': values.Value(environ_name='DB_HOST'),
-            'PORT': values.Value(environ_name='DB_PORT'),
-        }
-    }
-
-    # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    PROJECT_ROOT_DIR = os.path.dirname(BASE_DIR)
-
-    ADMINS = (('artyomsliusar', 'artyomsliusar@gmail.com'),)
-
-    AUTH_USER_MODEL = "main.User"
-
-    LOGIN_REDIRECT_URL = ('/home/')
-    LOGIN_URL = '/login/'
-
-    # Application definition
+    DEFAULT_FROM_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
+    EMAIL_BACKEND = values.Value()
+    EMAIL_HOST = values.Value()
+    EMAIL_HOST_PASSWORD = values.Value()
+    EMAIL_HOST_USER = values.Value()
+    EMAIL_PORT = values.Value()
+    EMAIL_USE_TLS = values.BooleanValue(False)
     INSTALLED_APPS = [
         # Django apps
         'django.contrib.admin',
@@ -52,7 +68,8 @@ class Settings(Configuration):
         # Local apps
         'main.apps.MainConfig'
     ]
-
+    LANGUAGE_CODE = values.Value('en-us')
+    LOGGING = logging_config()
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
@@ -64,9 +81,26 @@ class Settings(Configuration):
         # custom exception handler
         'main.middleware.timezone_middleware.TimezoneMiddleware',
     ]
-
+    REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework.authentication.SessionAuthentication',
+        ),
+        'DEFAULT_PERMISSION_CLASSES': (
+            'rest_framework.permissions.IsAuthenticated',
+        ),
+        'DEFAULT_RENDERER_CLASSES': (
+            'rest_framework.renderers.JSONRenderer',
+        ),
+        'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
+    }
     ROOT_URLCONF = 'storageofknowledge.urls'
-
+    SECRET_KEY = values.SecretValue()
+    SERVER_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
+    SESSION_COOKIE_AGE = values.IntegerValue(5 * 60)  # 5 minutes
+    SESSION_SAVE_EVERY_REQUEST = values.BooleanValue(True)
+    STATIC_ROOT = values.Value(None)
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = values.SingleNestedListValue([])
     TEMPLATES = [
         {
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -81,95 +115,13 @@ class Settings(Configuration):
                     'django.contrib.auth.context_processors.auth',
                     'django.contrib.messages.context_processors.messages',
                     'django.template.context_processors.media',
+                    'main.context_processors.from_settings',
                 ],
             },
         },
     ]
-
-    # Static files (CSS, JavaScript, Images)
-    STATIC_URL = '/static/'
-
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-    WSGI_APPLICATION = 'storageofknowledge.wsgi.application'
-
-    # Password validation
-    # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
-    AUTH_PASSWORD_VALIDATORS = [
-        {
-            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-        },
-    ]
-
-    # Internationalization
-    # https://docs.djangoproject.com/en/1.11/topics/i18n/
-    LANGUAGE_CODE = 'en-us'
     TIME_ZONE = 'UTC'
     USE_I18N = True
     USE_L10N = True
     USE_TZ = True
-
-    # Email
-    EMAIL_BACKEND = values.Value()
-    EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_HOST_PASSWORD = values.Value()
-    EMAIL_HOST_USER = 'StorageOfKnowledge@gmail.com'
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-
-    DEFAULT_FROM_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
-    SERVER_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
-
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-    # --- LOGGING CONFIGURATION --- :
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'mail_admins': {
-                'level': 'ERROR',
-                'class': 'django.utils.log.AdminEmailHandler',
-                'include_html': True,
-            },
-            'console': {
-                'level': 'DEBUG',
-                'class': 'logging.StreamHandler',
-            }
-        },
-        'loggers': {
-            'django.request': {
-                'handlers': ['mail_admins'],
-                'level': 'ERROR',
-                'propagate': False,
-            },
-            'django': {
-                'handlers': ['console'],
-                'level': 'INFO',
-                'propagate': False,
-            },
-        }
-    }
-
-    REST_FRAMEWORK = {
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework.authentication.SessionAuthentication',
-        ),
-        'DEFAULT_PERMISSION_CLASSES': (
-            'rest_framework.permissions.IsAuthenticated',
-        ),
-        'DEFAULT_RENDERER_CLASSES': (
-            'rest_framework.renderers.JSONRenderer',
-        ),
-        'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
-    }
+    WSGI_APPLICATION = 'storageofknowledge.wsgi.application'

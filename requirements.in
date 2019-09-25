@@ -4,6 +4,7 @@ django-configurations
 django-dotenv
 djangorestframework
 django-filter
+dj-database-url==0.5.0
 pytz
 gunicorn
 mysqlclient
