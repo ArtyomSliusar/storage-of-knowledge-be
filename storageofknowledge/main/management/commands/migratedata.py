@@ -3,9 +3,14 @@ from django.core.management.base import BaseCommand
 from main.models import *
 
 
+# FIXME: remove command after refactoring
+
 """
-1. add old models to models.py
-2. add `old_db` to settings DATABASES
+HOW TO:
+1. Use Dockerfile to start old and new databases
+2. Add old(missing) models to models.py
+3. Add `old_db` as a second DB to settings DATABASES
+4. Run command to migrate data from old DB to a new one 
 """
 
 SUBJECT_MAP = {
