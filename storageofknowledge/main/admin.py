@@ -16,8 +16,8 @@ class SubjectAdmin(admin.ModelAdmin):
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'topic', 'subjects_list', 'user', 'private', 'date_created')
-    search_fields = ('id', 'topic')
+    list_display = ('id', 'title', 'subjects_list', 'user', 'private', 'date_created')
+    search_fields = ('id', 'title')
     filter_horizontal = ('subjects',)
 
     def subjects_list(self, obj):
@@ -26,8 +26,8 @@ class NoteAdmin(admin.ModelAdmin):
 
 @admin.register(Link)
 class LinkAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'subjects_list', 'user', 'private')
-    search_fields = ('id', 'name')
+    list_display = ('id', 'title', 'subjects_list', 'user', 'private')
+    search_fields = ('id', 'title')
     filter_horizontal = ('subjects',)
 
     def subjects_list(self, obj):

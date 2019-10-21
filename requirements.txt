@@ -6,12 +6,15 @@
 #
 dj-database-url==0.5.0
 django-configurations==2.1
+django-cors-headers==3.1.0
 django-dotenv==1.4.2
 django-extensions==2.2.1
 django-filter==2.2.0
 django==2.1.11
+djangorestframework-simplejwt==4.3.0
 djangorestframework==3.10.2
 gunicorn==19.9.0
 mysqlclient==1.4.2.post1
+pyjwt==1.7.1              # via djangorestframework-simplejwt
 pytz==2019.2
 six==1.12.0               # via django-extensions

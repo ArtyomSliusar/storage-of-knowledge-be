@@ -3,7 +3,9 @@ django-extensions
 django-configurations
 django-dotenv
 djangorestframework
+djangorestframework_simplejwt
 django-filter
+django-cors-headers
 dj-database-url==0.5.0
 pytz
 gunicorn

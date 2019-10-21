@@ -61,7 +61,7 @@ class User(AbstractUser):
 
 class Subject(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
@@ -72,7 +72,7 @@ class Subject(models.Model):
 
 class Note(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    topic = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
     body = models.TextField()
     subjects = models.ManyToManyField(Subject)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -81,30 +81,32 @@ class Note(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.topic
+        return self.title
 
     class Meta:
-        ordering = ["topic"]
+        ordering = ["title"]
         unique_together = (
-            ('topic', 'user'),
+            ('title', 'user'),
         )
 
 
 class Link(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
     link = models.URLField(max_length=2000)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     subjects = models.ManyToManyField(Subject)
     private = models.BooleanField(default=0)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.title
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["title"]
         unique_together = (
-            ('name', 'user'),
+            ('title', 'user'),
         )
 
 
@@ -119,34 +121,12 @@ class NoteLike(models.Model):
         )
 
 
-class NoteDislike(models.Model):
-    note = models.ForeignKey(Note, related_name='dislikes', on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = "note_dislike"
-        unique_together = (
-            ('note', 'user'),
-        )
-
-
 class LinkLike(models.Model):
     link = models.ForeignKey(Link, related_name='likes', on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "link_like"
-        unique_together = (
-            ('link', 'user'),
-        )
-
-
-class LinkDislike(models.Model):
-    link = models.ForeignKey(Link, related_name='dislikes', on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = "link_dislike"
         unique_together = (
             ('link', 'user'),
         )

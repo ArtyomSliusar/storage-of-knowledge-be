@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import timedelta
 from configurations import Configuration, values
 
 
@@ -43,6 +44,7 @@ class Settings(Configuration):
         },
     ]
     AUTH_USER_MODEL = "main.User"
+    CORS_ORIGIN_WHITELIST = values.ListValue([])
     DATABASES = values.DatabaseURLValue(environ_prefix='DJANGO')
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = values.BooleanValue(False)
@@ -64,7 +66,9 @@ class Settings(Configuration):
         # Third party
         'django_extensions',
         'rest_framework',
-        'rest_framework.authtoken',
+        'rest_framework_simplejwt.token_blacklist',
+        'corsheaders',
+        'django_filters',
         # Local apps
         'main.apps.MainConfig'
     ]
@@ -73,6 +77,7 @@ class Settings(Configuration):
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -82,9 +87,11 @@ class Settings(Configuration):
         'main.middleware.timezone_middleware.TimezoneMiddleware',
     ]
     REST_FRAMEWORK = {
+        'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
         'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework.authentication.SessionAuthentication',
+            'rest_framework_simplejwt.authentication.JWTAuthentication',
         ),
+        'PAGE_SIZE': 50,
         'DEFAULT_PERMISSION_CLASSES': (
             'rest_framework.permissions.IsAuthenticated',
         ),
@@ -98,6 +105,9 @@ class Settings(Configuration):
     SERVER_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
     SESSION_COOKIE_AGE = values.IntegerValue(5 * 60)  # 5 minutes
     SESSION_SAVE_EVERY_REQUEST = values.BooleanValue(True)
+    SIMPLE_JWT = {
+        'ROTATE_REFRESH_TOKENS': True,
+    }
     STATIC_ROOT = values.Value(None)
     STATIC_URL = '/static/'
     STATICFILES_DIRS = values.SingleNestedListValue([])

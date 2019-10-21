@@ -10,14 +10,15 @@ New features:
     + use UUID
 
  UI:
+  - reset password
   - allow to add notes with multiple subjects
   - private cabinet with delete account option
   - allow to add subjects? (with moderation)
   - mobile friendly
   - update note-form tool
-  - user email confirmation
+  - user email confirmation on register?
   - add reCAPTCHA
-  - add favicon
+  + add favicon
   - when making a note, show how many characters left
   - add popup for not logged in users (describe functionality)
   - add notification popups

@@ -1,13 +1,13 @@
-from django.conf.urls import url, include
+from django.conf.urls import include
 from django.contrib import admin
-
+from django.urls import path
 
 admin.site.site_header = 'Storage Of Knowledge Admin'
 admin.site.site_title = 'Storage Of Knowledge'
 
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^api/', include("main.api.urls")),
-    url(r'^', include('main.urls')),
+    path('admin/', admin.site.urls),
+    path('api/', include("main.api.urls")),
+    path('', include('main.urls')),
 ]
