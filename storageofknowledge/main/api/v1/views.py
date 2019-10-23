@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -62,14 +64,15 @@ class NoteList(ListAPIView):
     renderer_classes = [JSONRenderer]
     serializer_class = NoteListSerializer
     queryset = Note.objects.all()
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = NoteFilter
     pagination_class = LimitOffsetPagination
+    ordering_fields = ['title', 'user', 'likes_count', 'date_modified']
 
     def get_queryset(self):
-        queryset = Note.objects.filter(private=False)
+        queryset = Note.objects.filter(private=False).annotate(likes_count=Count('likes'))
         if self.request.user.is_authenticated:
-            private_queryset = Note.objects.filter(private=True, user=self.request.user)
+            private_queryset = Note.objects.filter(private=True, user=self.request.user).annotate(likes_count=Count('likes'))
             queryset = queryset | private_queryset
         return queryset
 
@@ -79,14 +82,15 @@ class LinkList(ListAPIView):
     renderer_classes = [JSONRenderer]
     serializer_class = LinkListSerializer
     queryset = Link.objects.all()
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = LinkFilter
     pagination_class = LimitOffsetPagination
+    ordering_fields = ['title', 'user', 'likes_count', 'date_modified']
 
     def get_queryset(self):
-        queryset = Link.objects.filter(private=False)
+        queryset = Link.objects.filter(private=False).annotate(likes_count=Count('likes'))
         if self.request.user.is_authenticated:
-            private_queryset = Link.objects.filter(private=True, user=self.request.user)
+            private_queryset = Link.objects.filter(private=True, user=self.request.user).annotate(likes_count=Count('likes'))
             queryset = queryset | private_queryset
         return queryset
 

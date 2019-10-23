@@ -64,7 +64,7 @@ class SubjectSerializer(serializers.ModelSerializer):
 class NoteListSerializer(serializers.ModelSerializer):
     subjects = SubjectsField(many=True, read_only=True)
     user = serializers.StringRelatedField(source="user.username")
-    likes_count = serializers.SerializerMethodField()
+    likes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         ref_name = "NoteList"
@@ -79,14 +79,11 @@ class NoteListSerializer(serializers.ModelSerializer):
             'date_modified'
         )
 
-    def get_likes_count(self, obj):
-        return obj.likes.count()
-
 
 class LinkListSerializer(serializers.ModelSerializer):
     subjects = SubjectsField(many=True, read_only=True)
     user = serializers.StringRelatedField(source="user.username")
-    likes_count = serializers.SerializerMethodField()
+    likes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         ref_name = "LinkList"
@@ -100,9 +97,6 @@ class LinkListSerializer(serializers.ModelSerializer):
             'likes_count',
             'date_modified'
         )
-
-    def get_likes_count(self, obj):
-        return obj.likes.count()
 
 
 class UserSerializer(serializers.ModelSerializer):
