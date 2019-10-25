@@ -8,13 +8,18 @@ dj-database-url==0.5.0
 django-configurations==2.1
 django-cors-headers==3.1.0
 django-dotenv==1.4.2
+django-elasticsearch-dsl==7.0.0
 django-extensions==2.2.1
 django-filter==2.2.0
 django==2.1.11
 djangorestframework-simplejwt==4.3.0
 djangorestframework==3.10.2
+elasticsearch-dsl==7.1.0
+elasticsearch==7.0.5      # via elasticsearch-dsl
 gunicorn==19.9.0
 mysqlclient==1.4.2.post1
 pyjwt==1.7.1              # via djangorestframework-simplejwt
+python-dateutil==2.8.0    # via elasticsearch-dsl
 pytz==2019.2
-six==1.12.0               # via django-extensions
+six==1.12.0               # via django-extensions, elasticsearch-dsl, python-dateutil
+urllib3==1.25.6           # via elasticsearch

@@ -7,6 +7,8 @@ djangorestframework_simplejwt
 django-filter
 django-cors-headers
 dj-database-url==0.5.0
+django-elasticsearch-dsl
+elasticsearch-dsl>=7.0.0,<8.0.0
 pytz
 gunicorn
 mysqlclient

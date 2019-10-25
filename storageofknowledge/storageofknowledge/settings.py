@@ -49,6 +49,15 @@ class Settings(Configuration):
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = values.BooleanValue(False)
     DEFAULT_FROM_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
+    ELASTICSEARCH_HOST = values.Value()
+    @property
+    def ELASTICSEARCH_DSL(self):
+        # https://django-configurations.readthedocs.io/en/stable/patterns/#property-settings
+        return {
+            'default': {
+                'hosts': self.ELASTICSEARCH_HOST
+            }
+        }
     EMAIL_BACKEND = values.Value()
     EMAIL_HOST = values.Value()
     EMAIL_HOST_PASSWORD = values.Value()
@@ -65,6 +74,7 @@ class Settings(Configuration):
         'django.contrib.staticfiles',
         # Third party
         'django_extensions',
+        'django_elasticsearch_dsl',
         'rest_framework',
         'rest_framework_simplejwt.token_blacklist',
         'corsheaders',

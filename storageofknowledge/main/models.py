@@ -89,6 +89,10 @@ class Note(models.Model):
             ('title', 'user'),
         )
 
+    def subjects_to_string(self):
+        subjects_list = list(self.subjects.values_list('name', flat=True))
+        return ' '.join(subjects_list)
+
 
 class Link(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -108,6 +112,10 @@ class Link(models.Model):
         unique_together = (
             ('title', 'user'),
         )
+
+    def subjects_to_string(self):
+        subjects_list = list(self.subjects.values_list('name', flat=True))
+        return ' '.join(subjects_list)
 
 
 class NoteLike(models.Model):

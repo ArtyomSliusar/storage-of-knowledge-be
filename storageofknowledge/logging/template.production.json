@@ -2,6 +2,16 @@
 		"version": 1,
 		"disable_existing_loggers": false,
 		"loggers": {
+				"django.request": {
+						"handlers": ["mail_admins"],
+						"level": "ERROR"
+				},
+				"django": {
+						"handlers": ["console"],
+						"level": "INFO"
+				}
+		},
+		"handlers": {
 				"mail_admins": {
 						"level": "ERROR",
 						"class": "django.utils.log.AdminEmailHandler",
@@ -11,15 +21,5 @@
 						"level": "DEBUG",
 						"class": "logging.StreamHandler"
 				}
-		},
-		"handlers": {
-				"django.request": {
-						"handlers": ["mail_admins"],
-						"level": "ERROR"
-				},
-				"django": {
-						"handlers": ["console"],
-						"level": "INFO"
-					}
 		}
 }

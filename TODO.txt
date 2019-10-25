@@ -15,7 +15,7 @@ New features:
   - private cabinet with delete account option
   - allow to add subjects? (with moderation)
   - mobile friendly
-  - update note-form tool
+  - update note-form tool (use https://simplemde.com/)
   - user email confirmation on register?
   - add reCAPTCHA
   + add favicon

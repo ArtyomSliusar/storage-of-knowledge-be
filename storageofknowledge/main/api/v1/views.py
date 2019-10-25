@@ -10,11 +10,11 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
-
 from main.api.filters import NoteFilter, LinkFilter
 from main.api.permissions import IsCreationOrIsAuthenticated
 from main.api.serializers import SubjectSerializer, UserSerializer, RefreshTokenSerializer, ContactSerializer, \
     NoteListSerializer, LinkListSerializer
+from main.documents import NoteDocument, LinkDocument
 from main.models import Subject, Note, Link
 
 
@@ -63,36 +63,52 @@ class NoteList(ListAPIView):
     permission_classes = [AllowAny]
     renderer_classes = [JSONRenderer]
     serializer_class = NoteListSerializer
-    queryset = Note.objects.all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = NoteFilter
     pagination_class = LimitOffsetPagination
     ordering_fields = ['title', 'user', 'likes_count', 'date_modified']
 
     def get_queryset(self):
-        queryset = Note.objects.filter(private=False).annotate(likes_count=Count('likes'))
+        queryset = Note.objects.filter(private=False)
+
         if self.request.user.is_authenticated:
-            private_queryset = Note.objects.filter(private=True, user=self.request.user).annotate(likes_count=Count('likes'))
-            queryset = queryset | private_queryset
-        return queryset
+            private_queryset = Note.objects.filter(private=True, user=self.request.user)
+            queryset = queryset | private_queryset  # union
+
+        search_query = self.request.query_params.get('search', None)
+        if search_query:
+            q = NoteDocument.build_query(search_query)
+            search_results = NoteDocument.search().query(q)[:100]  # return top 100
+            queryset = queryset & search_results.to_queryset()  # intersection
+
+        qs = queryset.annotate(likes_count=Count('likes'))
+        return qs
 
 
 class LinkList(ListAPIView):
     permission_classes = [AllowAny]
     renderer_classes = [JSONRenderer]
     serializer_class = LinkListSerializer
-    queryset = Link.objects.all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = LinkFilter
     pagination_class = LimitOffsetPagination
     ordering_fields = ['title', 'user', 'likes_count', 'date_modified']
 
     def get_queryset(self):
-        queryset = Link.objects.filter(private=False).annotate(likes_count=Count('likes'))
+        queryset = Link.objects.filter(private=False)
+
         if self.request.user.is_authenticated:
-            private_queryset = Link.objects.filter(private=True, user=self.request.user).annotate(likes_count=Count('likes'))
-            queryset = queryset | private_queryset
-        return queryset
+            private_queryset = Link.objects.filter(private=True, user=self.request.user)
+            queryset = queryset | private_queryset  # union
+
+        search_query = self.request.query_params.get('search', None)
+        if search_query:
+            q = LinkDocument.build_query(search_query)
+            search_results = LinkDocument.search().query(q)[:100]  # return top 100
+            queryset = queryset & search_results.to_queryset()  # intersection
+
+        qs = queryset.annotate(likes_count=Count('likes'))
+        return qs
 
 
 class UserViewSet(ViewSet):
