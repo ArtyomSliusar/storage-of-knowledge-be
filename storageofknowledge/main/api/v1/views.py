@@ -9,11 +9,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from main.api.filters import NoteFilter, LinkFilter
 from main.api.permissions import IsCreationOrIsAuthenticated
 from main.api.serializers import SubjectSerializer, UserSerializer, RefreshTokenSerializer, ContactSerializer, \
-    NoteListSerializer, LinkListSerializer
+    NoteListSerializer, LinkListSerializer, SuggestionsSerializer
 from main.documents import NoteDocument, LinkDocument
 from main.models import Subject, Note, Link
 
@@ -83,6 +84,56 @@ class NoteList(ListAPIView):
 
         qs = queryset.annotate(likes_count=Count('likes'))
         return qs
+
+
+class NoteSuggestions(APIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, format=None):
+        suggestions = []
+        query = request.query_params.get('query', None)
+
+        if query:
+            es_suggestions = NoteDocument.search().suggest('suggestions', query, completion={'field': 'title_suggestions'}).execute()
+
+            # can't properly filter suggestions using context suggester, because of the issue:
+            # https://github.com/elastic/elasticsearch/issues/30884
+            # that is why have to filter suggestions after retrieving them from ES
+            if self.request.user.is_authenticated:
+                available_notes = {note.str_id for note in self.request.user.available_notes}
+            else:
+                available_notes = {note.str_id for note in Note.objects.filter(private=False)}
+
+            suggestions = [o for o in es_suggestions.suggest.suggestions[0].options if o._id in available_notes]
+
+        serializer = SuggestionsSerializer(suggestions)
+        return Response(serializer.data)
+
+
+class LinkSuggestions(APIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, format=None):
+        suggestions = []
+        query = request.query_params.get('query', None)
+
+        if query:
+            es_suggestions = LinkDocument.search().suggest('suggestions', query, completion={'field': 'title_suggestions'}).execute()
+
+            # can't properly filter suggestions using context suggester, because of the issue:
+            # https://github.com/elastic/elasticsearch/issues/30884
+            # that is why have to filter suggestions after retrieving them from ES
+            if self.request.user.is_authenticated:
+                available_links = {link.str_id for link in self.request.user.available_links}
+            else:
+                available_links = {link.str_id for link in Link.objects.filter(private=False)}
+
+            suggestions = [o for o in es_suggestions.suggest.suggestions[0].options if o._id in available_links]
+
+        serializer = SuggestionsSerializer(suggestions)
+        return Response(serializer.data)
 
 
 class LinkList(ListAPIView):

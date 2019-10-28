@@ -8,6 +8,10 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 UserModel = get_user_model()
 
 
+class StringListField(serializers.ListField):
+    child = serializers.CharField()
+
+
 class SubjectsField(serializers.RelatedField):
 
     def to_representation(self, value):
@@ -114,3 +118,11 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "password",
         )
+
+
+class SuggestionsSerializer(serializers.BaseSerializer):
+    def to_representation(self, value: list):
+        result = {'suggestions': []}
+        if value:
+            result['suggestions'] = [option.text for option in value]
+        return result

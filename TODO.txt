@@ -1,6 +1,7 @@
 New features:
 
  Internal:
+    - do I need async/await on FE?
     + use Django 2.1
     - use full text search with Elasticsearch
     - buy SSL certificate

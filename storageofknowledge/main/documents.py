@@ -7,6 +7,8 @@ from .models import Note, Link
 @registry.register_document
 class NoteDocument(Document):
     subjects = fields.TextField(attr="subjects_to_string")
+    user = fields.ObjectField(properties={'username': fields.TextField()})
+    title_suggestions = fields.CompletionField(attr='title')
 
     class Index:
         name = 'notes'
@@ -19,6 +21,7 @@ class NoteDocument(Document):
         fields = [
             'title',
             'body',
+            'private'
         ]
 
     @staticmethod
@@ -34,6 +37,8 @@ class NoteDocument(Document):
 @registry.register_document
 class LinkDocument(Document):
     subjects = fields.TextField(attr="subjects_to_string")
+    user = fields.ObjectField(properties={'username': fields.TextField()})
+    title_suggestions = fields.CompletionField(attr='title')
 
     class Index:
         name = 'links'
@@ -46,6 +51,7 @@ class LinkDocument(Document):
         fields = [
             'title',
             'link',
+            'private'
         ]
 
     @staticmethod

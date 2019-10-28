@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Q
+
 from main.validators import validate_time_zone
 from django.utils.translation import gettext_lazy as _
 
@@ -58,6 +60,14 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    @property
+    def available_notes(self):
+        return Note.objects.filter(Q(user=self) | Q(private=False)).distinct()
+
+    @property
+    def available_links(self):
+        return Link.objects.filter(Q(user=self) | Q(private=False)).distinct()
+
 
 class Subject(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -93,6 +103,10 @@ class Note(models.Model):
         subjects_list = list(self.subjects.values_list('name', flat=True))
         return ' '.join(subjects_list)
 
+    @property
+    def str_id(self):
+        return str(self.id)
+
 
 class Link(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -116,6 +130,10 @@ class Link(models.Model):
     def subjects_to_string(self):
         subjects_list = list(self.subjects.values_list('name', flat=True))
         return ' '.join(subjects_list)
+
+    @property
+    def str_id(self):
+        return str(self.id)
 
 
 class NoteLike(models.Model):

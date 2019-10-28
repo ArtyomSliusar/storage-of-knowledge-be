@@ -9,6 +9,8 @@ router.register(r'users', UserViewSet, basename='user')
 
 urlpatterns = [
     path('subjects/', SubjectList.as_view(), name='subjects-list'),
+    path('notes/suggestions/', NoteSuggestions.as_view(), name='notes-suggestions'),
+    path('links/suggestions/', LinkSuggestions.as_view(), name='links-suggestions'),
     path('notes/', NoteList.as_view(), name='notes-list'),
     path('links/', LinkList.as_view(), name='links-list'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
