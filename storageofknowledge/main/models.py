@@ -62,11 +62,11 @@ class User(AbstractUser):
 
     @property
     def available_notes(self):
-        return Note.objects.filter(Q(user=self) | Q(private=False)).distinct()
+        return Note.objects.filter(Q(user=self, private=True) | Q(private=False))
 
     @property
     def available_links(self):
-        return Link.objects.filter(Q(user=self) | Q(private=False)).distinct()
+        return Link.objects.filter(Q(user=self, private=True) | Q(private=False))
 
 
 class Subject(models.Model):

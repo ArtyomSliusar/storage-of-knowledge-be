@@ -70,20 +70,18 @@ class NoteList(ListAPIView):
     ordering_fields = ['title', 'user', 'likes_count', 'date_modified']
 
     def get_queryset(self):
-        queryset = Note.objects.filter(private=False)
-
         if self.request.user.is_authenticated:
-            private_queryset = Note.objects.filter(private=True, user=self.request.user)
-            queryset = queryset | private_queryset  # union
+            available_notes = self.request.user.available_notes
+        else:
+            available_notes = Note.objects.filter(private=False)
 
         search_query = self.request.query_params.get('search', None)
         if search_query:
             q = NoteDocument.build_query(search_query)
             search_results = NoteDocument.search().query(q)[:100]  # return top 100
-            queryset = queryset & search_results.to_queryset()  # intersection
+            available_notes = available_notes & search_results.to_queryset()  # intersection
 
-        qs = queryset.annotate(likes_count=Count('likes'))
-        return qs
+        return available_notes.annotate(likes_count=Count('likes'))
 
 
 class NoteSuggestions(APIView):
@@ -100,15 +98,34 @@ class NoteSuggestions(APIView):
             # can't properly filter suggestions using context suggester, because of the issue:
             # https://github.com/elastic/elasticsearch/issues/30884
             # that is why have to filter suggestions after retrieving them from ES
-            if self.request.user.is_authenticated:
-                available_notes = {note.str_id for note in self.request.user.available_notes}
-            else:
-                available_notes = {note.str_id for note in Note.objects.filter(private=False)}
-
-            suggestions = [o for o in es_suggestions.suggest.suggestions[0].options if o._id in available_notes]
+            suggestions = [o for o in es_suggestions.suggest.suggestions[0].options if o['_source'].private is False]
 
         serializer = SuggestionsSerializer(suggestions)
         return Response(serializer.data)
+
+
+class LinkList(ListAPIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [JSONRenderer]
+    serializer_class = LinkListSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_class = LinkFilter
+    pagination_class = LimitOffsetPagination
+    ordering_fields = ['title', 'user', 'likes_count', 'date_modified']
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            available_links = self.request.user.available_links
+        else:
+            available_links = Link.objects.filter(private=False)
+
+        search_query = self.request.query_params.get('search', None)
+        if search_query:
+            q = LinkDocument.build_query(search_query)
+            search_results = LinkDocument.search().query(q)[:100]  # return top 100
+            available_links = available_links & search_results.to_queryset()  # intersection
+
+        return available_links.annotate(likes_count=Count('likes'))
 
 
 class LinkSuggestions(APIView):
@@ -125,41 +142,10 @@ class LinkSuggestions(APIView):
             # can't properly filter suggestions using context suggester, because of the issue:
             # https://github.com/elastic/elasticsearch/issues/30884
             # that is why have to filter suggestions after retrieving them from ES
-            if self.request.user.is_authenticated:
-                available_links = {link.str_id for link in self.request.user.available_links}
-            else:
-                available_links = {link.str_id for link in Link.objects.filter(private=False)}
-
-            suggestions = [o for o in es_suggestions.suggest.suggestions[0].options if o._id in available_links]
+            suggestions = [o for o in es_suggestions.suggest.suggestions[0].options if o['_source'].private is False]
 
         serializer = SuggestionsSerializer(suggestions)
         return Response(serializer.data)
-
-
-class LinkList(ListAPIView):
-    permission_classes = [AllowAny]
-    renderer_classes = [JSONRenderer]
-    serializer_class = LinkListSerializer
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_class = LinkFilter
-    pagination_class = LimitOffsetPagination
-    ordering_fields = ['title', 'user', 'likes_count', 'date_modified']
-
-    def get_queryset(self):
-        queryset = Link.objects.filter(private=False)
-
-        if self.request.user.is_authenticated:
-            private_queryset = Link.objects.filter(private=True, user=self.request.user)
-            queryset = queryset | private_queryset  # union
-
-        search_query = self.request.query_params.get('search', None)
-        if search_query:
-            q = LinkDocument.build_query(search_query)
-            search_results = LinkDocument.search().query(q)[:100]  # return top 100
-            queryset = queryset & search_results.to_queryset()  # intersection
-
-        qs = queryset.annotate(likes_count=Count('likes'))
-        return qs
 
 
 class UserViewSet(ViewSet):
