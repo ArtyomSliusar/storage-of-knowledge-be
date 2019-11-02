@@ -2,6 +2,9 @@ New features:
 
  Internal:
     - do I need async/await on FE?
+    + use snackbars for FE notifications (https://material-ui.com/components/snackbars/)
+    - use FE badges for private/public info
+    - use FE badges for FILTERS button
     + use Django 2.1
     - use full text search with Elasticsearch
     - buy SSL certificate

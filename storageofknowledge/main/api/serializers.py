@@ -8,22 +8,6 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 UserModel = get_user_model()
 
 
-class StringListField(serializers.ListField):
-    child = serializers.CharField()
-
-
-class SubjectsField(serializers.RelatedField):
-
-    def to_representation(self, value):
-        return value.name
-
-
-class LikesField(serializers.RelatedField):
-
-    def to_representation(self, value):
-        return value.name
-
-
 class ContactSerializer(serializers.Serializer):
     name = serializers.CharField()
     email = serializers.EmailField()
@@ -66,8 +50,8 @@ class SubjectSerializer(serializers.ModelSerializer):
 
 
 class NoteListSerializer(serializers.ModelSerializer):
-    subjects = SubjectsField(many=True, read_only=True)
-    user = serializers.StringRelatedField(source="user.username")
+    subjects = serializers.SlugRelatedField(many=True, slug_field='name', read_only=True)
+    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
     likes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -84,9 +68,28 @@ class NoteListSerializer(serializers.ModelSerializer):
         )
 
 
+class NoteSerializer(serializers.ModelSerializer):
+    subjects = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Subject.objects.all())
+    user = serializers.SlugRelatedField(slug_field='username', queryset=UserModel.objects.all())
+
+    class Meta:
+        ref_name = "Note"
+        model = Note
+        fields = (
+            'id',
+            'title',
+            'body',
+            'subjects',
+            'user',
+            'private',
+            'date_created',
+            'date_modified'
+        )
+
+
 class LinkListSerializer(serializers.ModelSerializer):
-    subjects = SubjectsField(many=True, read_only=True)
-    user = serializers.StringRelatedField(source="user.username")
+    subjects = serializers.SlugRelatedField(many=True, slug_field='name', read_only=True)
+    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
     likes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -99,6 +102,25 @@ class LinkListSerializer(serializers.ModelSerializer):
             'user',
             'private',
             'likes_count',
+            'date_modified'
+        )
+
+
+class LinkSerializer(serializers.ModelSerializer):
+    subjects = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Subject.objects.all())
+    user = serializers.SlugRelatedField(slug_field='username', queryset=UserModel.objects.all())
+
+    class Meta:
+        ref_name = "Link"
+        model = Link
+        fields = (
+            'id',
+            'title',
+            'link',
+            'subjects',
+            'user',
+            'private',
+            'date_created',
             'date_modified'
         )
 
