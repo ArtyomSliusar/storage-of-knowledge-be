@@ -86,7 +86,7 @@ class Note(models.Model):
     body = models.TextField()
     subjects = models.ManyToManyField(Subject)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    private = models.BooleanField(default=0)
+    private = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
@@ -114,7 +114,7 @@ class Link(models.Model):
     link = models.URLField(max_length=2000)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     subjects = models.ManyToManyField(Subject)
-    private = models.BooleanField(default=0)
+    private = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
