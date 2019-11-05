@@ -8,14 +8,32 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from main.api.filters import NoteFilter, LinkFilter
 from main.api.permissions import IsCreationOrIsAuthenticated, IsOwnerOrPublicReadOnly
 from main.api.serializers import SubjectSerializer, UserSerializer, RefreshTokenSerializer, ContactSerializer, \
     NoteListSerializer, LinkListSerializer, SuggestionsSerializer, NoteSerializer, LinkSerializer
-from main.documents import NoteDocument, LinkDocument
+from main.documents import NoteDocument, LinkDocument, INDEX_DOCUMENT_MAP
 from main.models import Subject, Note, Link
+
+
+class UserViewSet(ViewSet):
+    permission_classes = [IsCreationOrIsAuthenticated]
+    serializer_class = UserSerializer
+
+    def retrieve(self, request, pk=None):
+        queryset = get_user_model().objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        self.check_object_permissions(request, user)
+        serializer = self.serializer_class(user)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ContactView(GenericAPIView):
@@ -46,6 +64,24 @@ class SubjectList(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = SubjectSerializer
     queryset = Subject.objects.all()
+
+
+class Suggestions(GenericAPIView):
+    serializer_class = SuggestionsSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+        suggestions = []
+        query = request.query_params.get('query', None)
+        index = request.query_params.get('index', None)
+
+        document_model = INDEX_DOCUMENT_MAP.get(index)
+
+        if query and document_model:
+            suggestions = document_model.get_suggestions(query)
+
+        serializer = self.get_serializer(suggestions)
+        return Response(serializer.data)
 
 
 class NoteView(RetrieveUpdateDestroyAPIView):
@@ -82,25 +118,6 @@ class NoteCollectionView(ListCreateAPIView):
             return NoteListSerializer
 
 
-class NoteSuggestions(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, format=None):
-        suggestions = []
-        query = request.query_params.get('query', None)
-
-        if query:
-            es_suggestions = NoteDocument.search().suggest('suggestions', query, completion={'field': 'title_suggestions'}).execute()
-
-            # can't properly filter suggestions using context suggester, because of the issue:
-            # https://github.com/elastic/elasticsearch/issues/30884
-            # that is why have to filter suggestions after retrieving them from ES
-            suggestions = [o for o in es_suggestions.suggest.suggestions[0].options if o['_source'].private is False]
-
-        serializer = SuggestionsSerializer(suggestions)
-        return Response(serializer.data)
-
-
 class LinkView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrPublicReadOnly]
     serializer_class = LinkSerializer
@@ -133,41 +150,3 @@ class LinkCollectionView(ListCreateAPIView):
             return LinkSerializer
         else:
             return LinkListSerializer
-
-
-class LinkSuggestions(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, format=None):
-        suggestions = []
-        query = request.query_params.get('query', None)
-
-        if query:
-            es_suggestions = LinkDocument.search().suggest('suggestions', query, completion={'field': 'title_suggestions'}).execute()
-
-            # can't properly filter suggestions using context suggester, because of the issue:
-            # https://github.com/elastic/elasticsearch/issues/30884
-            # that is why have to filter suggestions after retrieving them from ES
-            suggestions = [o for o in es_suggestions.suggest.suggestions[0].options if o['_source'].private is False]
-
-        serializer = SuggestionsSerializer(suggestions)
-        return Response(serializer.data)
-
-
-class UserViewSet(ViewSet):
-    permission_classes = [IsCreationOrIsAuthenticated]
-    serializer_class = UserSerializer
-
-    def retrieve(self, request, pk=None):
-        queryset = get_user_model().objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        self.check_object_permissions(request, user)
-        serializer = self.serializer_class(user)
-        return Response(serializer.data)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
