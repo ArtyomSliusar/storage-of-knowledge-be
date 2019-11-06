@@ -94,7 +94,8 @@ class NoteListSerializer(serializers.ModelSerializer):
 
 class NoteSerializer(serializers.ModelSerializer):
     subjects = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Subject.objects.all())
-    user = serializers.SlugRelatedField(slug_field='username', queryset=UserModel.objects.all())
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
         ref_name = "Note"
@@ -105,6 +106,7 @@ class NoteSerializer(serializers.ModelSerializer):
             'body',
             'subjects',
             'user',
+            'username',
             'private',
             'date_created',
             'date_modified'
@@ -132,7 +134,8 @@ class LinkListSerializer(serializers.ModelSerializer):
 
 class LinkSerializer(serializers.ModelSerializer):
     subjects = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Subject.objects.all())
-    user = serializers.SlugRelatedField(slug_field='username', queryset=UserModel.objects.all())
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
         ref_name = "Link"
@@ -143,6 +146,7 @@ class LinkSerializer(serializers.ModelSerializer):
             'link',
             'subjects',
             'user',
+            'username',
             'private',
             'date_created',
             'date_modified'
