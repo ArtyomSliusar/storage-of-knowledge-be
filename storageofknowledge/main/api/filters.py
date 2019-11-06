@@ -1,5 +1,5 @@
 import django_filters
-from main.models import Note, Link, Subject
+from main.models import Note, Link, NoteLike, LinkLike
 
 
 def filter_subjects(queryset, name, value):
@@ -16,6 +16,22 @@ class NoteFilter(django_filters.FilterSet):
     class Meta:
         model = Note
         fields = ['subjects']
+
+
+class NoteLikeFilter(django_filters.FilterSet):
+    user = django_filters.NumberFilter(field_name='user__id')
+
+    class Meta:
+        model = NoteLike
+        fields = ['user']
+
+
+class LinkLikeFilter(django_filters.FilterSet):
+    user = django_filters.NumberFilter(field_name='user__id')
+
+    class Meta:
+        model = LinkLike
+        fields = ['user']
 
 
 class LinkFilter(django_filters.FilterSet):

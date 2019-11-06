@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.mail import mail_admins
 from rest_framework import serializers
-from main.models import Subject, Note, Link
+from main.models import Subject, Note, Link, NoteLike, LinkLike
 from django.utils.text import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
@@ -36,6 +36,30 @@ class RefreshTokenSerializer(serializers.Serializer):
             RefreshToken(self.validated_data['refresh']).blacklist()
         except TokenError:
             self.fail('bad_token')
+
+
+class NoteLikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        ref_name = "NoteLike"
+        model = NoteLike
+        fields = (
+            'id',
+            'note',
+            'user',
+        )
+
+
+class LinkLikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        ref_name = "LinkLike"
+        model = LinkLike
+        fields = (
+            'id',
+            'link',
+            'user',
+        )
 
 
 class SubjectSerializer(serializers.ModelSerializer):

@@ -38,3 +38,16 @@ class IsOwnerOrPublicReadOnly(permissions.BasePermission):
             return obj.private is False or obj.user.id == request.user.id
         else:
             return obj.user.id == request.user.id
+
+
+class IsAuthenticatedAndIsOwner(permissions.BasePermission):
+    """
+    Common permission (both for ViewSet and ApiView)
+    for action on collection: authenticated
+    for action on resource: authenticated && owner
+    """
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        return obj.user.id == request.user.id

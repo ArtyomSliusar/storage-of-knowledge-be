@@ -1,20 +1,22 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count
-from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import ListAPIView, GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListAPIView, GenericAPIView, ListCreateAPIView, \
+    RetrieveUpdateDestroyAPIView, get_object_or_404, DestroyAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
-from main.api.filters import NoteFilter, LinkFilter
-from main.api.permissions import IsCreationOrIsAuthenticated, IsOwnerOrPublicReadOnly
+from main.api.filters import NoteFilter, LinkFilter, NoteLikeFilter, LinkLikeFilter
+from main.api.permissions import IsCreationOrIsAuthenticated, IsOwnerOrPublicReadOnly, \
+    IsAuthenticatedAndIsOwner
 from main.api.serializers import SubjectSerializer, UserSerializer, RefreshTokenSerializer, ContactSerializer, \
-    NoteListSerializer, LinkListSerializer, SuggestionsSerializer, NoteSerializer, LinkSerializer
+    NoteListSerializer, LinkListSerializer, SuggestionsSerializer, NoteSerializer, LinkSerializer, \
+    NoteLikeSerializer, LinkLikeSerializer
 from main.documents import NoteDocument, LinkDocument, INDEX_DOCUMENT_MAP
-from main.models import Subject, Note, Link
+from main.models import Subject, Note, Link, NoteLike, LinkLike
 
 
 class UserViewSet(ViewSet):
@@ -90,6 +92,53 @@ class NoteView(RetrieveUpdateDestroyAPIView):
     queryset = Note.objects.all()
 
 
+class NoteLikeView(DestroyAPIView):
+    """
+    DELETE /notes/{note_id}/likes/{id} - delete note's like (USER AUTHENTICATED AND OWNER OF LIKE)
+    """
+    permission_classes = [IsAuthenticatedAndIsOwner]
+    serializer_class = NoteLikeSerializer
+    lookup_fields = ['note_id', 'id']
+    queryset = NoteLike.objects.all()
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        filter = {}
+        for field in self.lookup_fields:
+            filter[field] = self.kwargs[field]
+
+        obj = get_object_or_404(queryset, **filter)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+
+class NoteLikeCollectionView(ListCreateAPIView):
+    """
+    GET /notes/{id}/likes - return list of note's likes (USER AUTHENTICATED)
+    GET /notes/{id}/likes?user={id} - return list of note's likes done by specified user (USER AUTHENTICATED)
+    POST /notes/{id}/likes - create like for note and user (USER AUTHENTICATED)
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = NoteLikeSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = NoteLikeFilter
+
+    def get_queryset(self):
+        note = get_object_or_404(Note, **self.kwargs)
+        return NoteLike.objects.filter(note=note)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data={
+                "note": kwargs['pk'],
+                "user": request.user.id
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_201_CREATED, data=serializer.data)
+
+
 class NoteCollectionView(ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, OrderingFilter]
@@ -116,6 +165,53 @@ class NoteCollectionView(ListCreateAPIView):
             return NoteSerializer
         else:
             return NoteListSerializer
+
+
+class LinkLikeView(DestroyAPIView):
+    """
+    DELETE /links/{link_id}/likes/{id} - delete link's like (USER AUTHENTICATED AND OWNER OF LIKE)
+    """
+    permission_classes = [IsAuthenticatedAndIsOwner]
+    serializer_class = LinkLikeSerializer
+    lookup_fields = ['link_id', 'id']
+    queryset = LinkLike.objects.all()
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        filter = {}
+        for field in self.lookup_fields:
+            filter[field] = self.kwargs[field]
+
+        obj = get_object_or_404(queryset, **filter)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+
+class LinkLikeCollectionView(ListCreateAPIView):
+    """
+    GET /links/{id}/likes - return list of link's likes (USER AUTHENTICATED)
+    GET /links/{id}/likes?user={id} - return list of link's likes done by specified user (USER AUTHENTICATED)
+    POST /links/{id}/likes - create like for link and user (USER AUTHENTICATED)
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = LinkLikeSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = LinkLikeFilter
+
+    def get_queryset(self):
+        link = get_object_or_404(Link, **self.kwargs)
+        return LinkLike.objects.filter(link=link)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data={
+                "link": kwargs['pk'],
+                "user": request.user.id
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_201_CREATED, data=serializer.data)
 
 
 class LinkView(RetrieveUpdateDestroyAPIView):
