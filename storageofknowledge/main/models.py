@@ -158,18 +158,20 @@ class LinkLike(models.Model):
         )
 
 
-class Comment(models.Model):
+class NoteComment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name="reply_set")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET(get_sentinel_user))
     note = models.ForeignKey(Note, related_name='comments', on_delete=models.CASCADE)
-    comment = models.CharField(max_length=2000)
+    body = models.CharField(max_length=2000)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.comment
+        return self.body
 
     class Meta:
+        db_table = "note_comment"
         ordering = ["date_created"]
 
 

@@ -1,6 +1,7 @@
 New features:
 
  Internal:
+ 	- fix timestamps
     - do I need async/await on FE?
     - make mobile header fixed
     + use buttons with icons and labels

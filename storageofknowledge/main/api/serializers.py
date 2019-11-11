@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.mail import mail_admins
 from rest_framework import serializers
-from main.models import Subject, Note, Link, NoteLike, LinkLike
+from main.models import Subject, Note, Link, NoteLike, LinkLike, NoteComment
 from django.utils.text import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
@@ -36,6 +36,33 @@ class RefreshTokenSerializer(serializers.Serializer):
             RefreshToken(self.validated_data['refresh']).blacklist()
         except TokenError:
             self.fail('bad_token')
+
+
+class RecursiveField(serializers.Serializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
+
+
+class NoteCommentSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    username = serializers.CharField(source='user.username', read_only=True)
+    reply_set = RecursiveField(many=True, read_only=True)
+
+    class Meta:
+        ref_name = "NoteComment"
+        model = NoteComment
+        fields = (
+            'id',
+            'parent',
+            'user',
+            'username',
+            'note',
+            'body',
+            'reply_set',
+            'date_created',
+            'date_modified'
+        )
 
 
 class NoteLikeSerializer(serializers.ModelSerializer):

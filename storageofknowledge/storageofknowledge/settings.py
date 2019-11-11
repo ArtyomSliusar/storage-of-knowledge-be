@@ -115,6 +115,7 @@ class Settings(Configuration):
     SERVER_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
     SESSION_COOKIE_AGE = values.IntegerValue(5 * 60)  # 5 minutes
     SESSION_SAVE_EVERY_REQUEST = values.BooleanValue(True)
+    # TODO: get values from .env
     SIMPLE_JWT = {
         'ROTATE_REFRESH_TOKENS': True,
     }

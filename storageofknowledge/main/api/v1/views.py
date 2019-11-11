@@ -14,9 +14,9 @@ from main.api.permissions import IsCreationOrIsAuthenticated, IsOwnerOrPublicRea
     IsAuthenticatedAndIsOwner
 from main.api.serializers import SubjectSerializer, UserSerializer, RefreshTokenSerializer, ContactSerializer, \
     NoteListSerializer, LinkListSerializer, SuggestionsSerializer, NoteSerializer, LinkSerializer, \
-    NoteLikeSerializer, LinkLikeSerializer
+    NoteLikeSerializer, LinkLikeSerializer, NoteCommentSerializer
 from main.documents import NoteDocument, LinkDocument, INDEX_DOCUMENT_MAP
-from main.models import Subject, Note, Link, NoteLike, LinkLike
+from main.models import Subject, Note, Link, NoteLike, LinkLike, NoteComment
 
 
 class UserViewSet(ViewSet):
@@ -90,6 +90,45 @@ class NoteView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrPublicReadOnly]
     serializer_class = NoteSerializer
     queryset = Note.objects.all()
+
+
+class NoteCommentView(DestroyAPIView):
+    """
+    DELETE /notes/{note_id}/comments/{id} - delete note's comment (USER AUTHENTICATED AND OWNER OF COMMENT)
+    """
+    permission_classes = [IsAuthenticatedAndIsOwner]
+    serializer_class = NoteCommentSerializer
+    lookup_fields = ['note_id', 'id']
+    queryset = NoteComment.objects.all()
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        filter = {}
+        for field in self.lookup_fields:
+            filter[field] = self.kwargs[field]
+
+        obj = get_object_or_404(queryset, **filter)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+
+class NoteCommentCollectionView(ListCreateAPIView):
+    """
+    GET /notes/{id}/comments - return tree of note's comments (ALLOW ANY)
+    POST /notes/{id}/comments - create comment for note and user (USER AUTHENTICATED)
+    """
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = NoteCommentSerializer
+
+    def get_queryset(self):
+        note = get_object_or_404(Note, **self.kwargs)
+        return NoteComment.objects.filter(note=note, parent__isnull=True).reverse()
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data={**request.data, "note": kwargs['pk']})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_201_CREATED, data=serializer.data)
 
 
 class NoteLikeView(DestroyAPIView):

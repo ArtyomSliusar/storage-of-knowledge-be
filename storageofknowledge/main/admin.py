@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from main.models import Subject, Note, Link, Comment, Book, Backlog, Goal, Course
+from main.models import Subject, Note, Link, NoteComment, Book, Backlog, Goal, Course
 from django.utils.translation import gettext_lazy as _
 
 
@@ -34,10 +34,10 @@ class LinkAdmin(admin.ModelAdmin):
         return " | ".join([subject.name for subject in obj.subjects.all()])
 
 
-@admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
+@admin.register(NoteComment)
+class NoteCommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'note', 'user', 'date_created')
-    search_fields = ('id', 'note')
+    search_fields = ('id', 'note__title')
 
 
 @admin.register(Book)
