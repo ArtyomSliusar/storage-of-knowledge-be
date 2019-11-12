@@ -2,6 +2,10 @@
 		"version": 1,
 		"disable_existing_loggers": false,
 		"loggers": {
+				"app": {
+            "handlers": ["mail_admins", "console"],
+            "level": "INFO"
+        },
 				"django.request": {
 						"handlers": ["mail_admins"],
 						"level": "ERROR"

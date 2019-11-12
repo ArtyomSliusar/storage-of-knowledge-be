@@ -21,6 +21,7 @@ def logging_config():
 
 
 class Settings(Configuration):
+    ACCESS_TOKEN_LIFETIME_MINUTES = values.FloatValue()
     ADMIN_HEADER_COLOR = values.Value()
     ADMIN_HEADER_TITLE = "{environment}{title}".format(
         environment=ENVIRONMENT or '{DJANGO_ENVIRONMENT}',
@@ -96,6 +97,8 @@ class Settings(Configuration):
         # custom exception handler
         'main.middleware.timezone_middleware.TimezoneMiddleware',
     ]
+    RECAPTCHA_PRIVATE_KEY = values.SecretValue()
+    RECAPTCHA_URL = values.Value(default="https://www.google.com/recaptcha/api/siteverify")
     REST_FRAMEWORK = {
         'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
         'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -115,10 +118,13 @@ class Settings(Configuration):
     SERVER_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
     SESSION_COOKIE_AGE = values.IntegerValue(5 * 60)  # 5 minutes
     SESSION_SAVE_EVERY_REQUEST = values.BooleanValue(True)
-    # TODO: get values from .env
-    SIMPLE_JWT = {
-        'ROTATE_REFRESH_TOKENS': True,
-    }
+    @property
+    def SIMPLE_JWT(self):
+        # https://django-configurations.readthedocs.io/en/stable/patterns/#property-settings
+        return {
+            'ROTATE_REFRESH_TOKENS': True,
+            'ACCESS_TOKEN_LIFETIME': timedelta(minutes=self.ACCESS_TOKEN_LIFETIME_MINUTES)
+        }
     STATIC_ROOT = values.Value(None)
     STATIC_URL = '/static/'
     STATICFILES_DIRS = values.SingleNestedListValue([])

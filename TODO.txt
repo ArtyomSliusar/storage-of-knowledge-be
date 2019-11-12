@@ -1,39 +1,37 @@
-New features:
+Now:
+	- add reCAPTCHA (contact form / registration form)
+	- fix timestamps
+	- user email confirmation on register?
+	- reset password
+	- correct notes body
+	- do I need async/await on FE?
+	- investigate caching
+	- clear tokens cron
+	- refactoring / TODOs
 
- Internal:
- 	- fix timestamps
-    - do I need async/await on FE?
-    - make mobile header fixed
-    + use buttons with icons and labels
-    + use snackbars for FE notifications (https://material-ui.com/components/snackbars/)
-    - use FE badges for private/public info
-    + use FE badges for FILTERS button
-    + use Django 2.1
-    - use full text search with Elasticsearch
-    - buy SSL certificate
-    - use docker compose
-    - add site monitoring and statistics solution
-    - email user, if somebody has commented his/her note
-    + use UUID
+Later:
+	- add client-side encryption
+	- fix `history.goBack()` goes out of the website
+	- use UUID for user
+	- add language field
+	- make mobile header fixed
+	+ use buttons with icons and labels
+	+ use snackbars for FE notifications (https://material-ui.com/components/snackbars/)
+	- use FE badges for private/public info
+	+ use FE badges for FILTERS button
+	+ use Django 2.1
+	- use full text search with Elasticsearch
+	- buy SSL certificate
+	- use docker compose
+	- add site monitoring and statistics solution
+	- email user, if somebody has commented his/her note
+	+ use UUID
+	- social networks integration
+	+ allow to add notes with multiple subjects
+	- private cabinet with delete account option
+	+ mobile friendly
+	+ update note-form tool (use https://simplemde.com/)
+	+ add favicon
+	- add popup for not logged in users (describe functionality)
+	+ add notification popups
 
- UI:
-  - reset password
-  - allow to add notes with multiple subjects
-  - private cabinet with delete account option
-  - allow to add subjects? (with moderation)
-  - mobile friendly
-  - update note-form tool (use https://simplemde.com/)
-  - user email confirmation on register?
-  - add reCAPTCHA
-  + add favicon
-  - when making a note, show how many characters left
-  - add popup for not logged in users (describe functionality)
-  - add notification popups
-
-Bugs:
-- do not allow to copy from buffer to comment, when exceeded
-
-
-n. Add "Cancel" button
-n. Add sorting in tables
-n. Social networks integration

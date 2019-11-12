@@ -1,3 +1,7 @@
+import json
+import logging
+import requests
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import mail_admins
 from rest_framework import serializers
@@ -6,12 +10,40 @@ from django.utils.text import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 UserModel = get_user_model()
+logger = logging.getLogger('app')
+
+
+def _validate_recaptcha(value):
+    """
+    Validate recaptcha response
+    """
+    r = requests.post(settings.RECAPTCHA_URL, {
+        'secret': settings.RECAPTCHA_PRIVATE_KEY,
+        'response': value
+    })
+    if r.ok:
+        decoded_r = json.loads(r.content.decode())
+        if decoded_r['success']:
+            return value
+        else:
+            r_error = decoded_r['error-codes']
+    else:
+        r_error = r.reason
+    logger.error("recaptcha validation failed: {status} - {error}".format(
+        status=r.status_code,
+        error=r_error
+    ))
+    raise serializers.ValidationError("recaptcha validation error")
 
 
 class ContactSerializer(serializers.Serializer):
     name = serializers.CharField()
     email = serializers.EmailField()
     message = serializers.CharField()
+    recaptcha = serializers.CharField()
+
+    def validate_recaptcha(self, value):
+        return _validate_recaptcha(value)
 
     def save(self):
         name = self.validated_data['name']
@@ -182,8 +214,13 @@ class LinkSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    recaptcha = serializers.CharField(write_only=True)
+
+    def validate_recaptcha(self, value):
+        return _validate_recaptcha(value)
 
     def create(self, validated_data):
+        validated_data.pop("recaptcha")
         user = UserModel.objects.create_user(**validated_data)
         return user
 
@@ -194,6 +231,7 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "email",
             "password",
+            "recaptcha"
         )
 
 

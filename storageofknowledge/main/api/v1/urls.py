@@ -8,7 +8,6 @@ router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 
 urlpatterns = [
-
     path('notes/<note_id>/comments/<id>', NoteCommentView.as_view(), name='note-comment-instance'),
     path('links/<link_id>/likes/<id>', LinkLikeView.as_view(), name='link-like-instance'),
     path('notes/<note_id>/likes/<id>', NoteLikeView.as_view(), name='note-like-instance'),
