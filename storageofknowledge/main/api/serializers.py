@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import mail_admins
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from main.models import Subject, Note, Link, NoteLike, LinkLike, NoteComment
 from django.utils.text import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
@@ -53,6 +54,14 @@ class ContactSerializer(serializers.Serializer):
             subject=f"Feedback from: {name} ({email})",
             message=f"{message}"
         )
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['time_zone'] = user.time_zone
+        return token
 
 
 class RefreshTokenSerializer(serializers.Serializer):
@@ -231,6 +240,7 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "email",
             "password",
+            "time_zone",
             "recaptcha"
         )
 

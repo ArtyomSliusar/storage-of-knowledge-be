@@ -9,12 +9,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
+from rest_framework_simplejwt.views import TokenObtainPairView
 from main.api.filters import NoteFilter, LinkFilter, NoteLikeFilter, LinkLikeFilter
 from main.api.permissions import IsCreationOrIsAuthenticated, IsOwnerOrPublicReadOnly, \
     IsAuthenticatedAndIsOwner
 from main.api.serializers import SubjectSerializer, UserSerializer, RefreshTokenSerializer, ContactSerializer, \
     NoteListSerializer, LinkListSerializer, SuggestionsSerializer, NoteSerializer, LinkSerializer, \
-    NoteLikeSerializer, LinkLikeSerializer, NoteCommentSerializer
+    NoteLikeSerializer, LinkLikeSerializer, NoteCommentSerializer, CustomTokenObtainPairSerializer
 from main.documents import NoteDocument, LinkDocument, INDEX_DOCUMENT_MAP
 from main.models import Subject, Note, Link, NoteLike, LinkLike, NoteComment
 
@@ -36,6 +37,10 @@ class UserViewSet(ViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 
 class ContactView(GenericAPIView):

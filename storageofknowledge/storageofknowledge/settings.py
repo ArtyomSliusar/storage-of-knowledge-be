@@ -94,7 +94,6 @@ class Settings(Configuration):
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
-        # custom exception handler
         'main.middleware.timezone_middleware.TimezoneMiddleware',
     ]
     RECAPTCHA_PRIVATE_KEY = values.SecretValue()

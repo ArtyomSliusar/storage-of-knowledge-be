@@ -1,13 +1,14 @@
 Now:
-	- add reCAPTCHA (contact form / registration form)
+	+ add reCAPTCHA (contact form / registration form)
 	- fix timestamps
+	- Home button should reload the page
 	- user email confirmation on register?
 	- reset password
-	- correct notes body
 	- do I need async/await on FE?
 	- investigate caching
 	- clear tokens cron
 	- refactoring / TODOs
+	- correct notes body
 
 Later:
 	- add client-side encryption
