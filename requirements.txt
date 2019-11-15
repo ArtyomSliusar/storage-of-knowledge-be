@@ -7,6 +7,7 @@
 certifi==2019.9.11        # via requests
 chardet==3.0.4            # via requests
 dj-database-url==0.5.0
+django-anymail[mailjet]==7.0.0
 django-configurations==2.1
 django-cors-headers==3.1.0
 django-dotenv==1.4.2
@@ -25,5 +26,5 @@ pyjwt==1.7.1              # via djangorestframework-simplejwt
 python-dateutil==2.8.0    # via elasticsearch-dsl
 pytz==2019.2
 requests==2.22.0
-six==1.12.0               # via django-extensions, elasticsearch-dsl, python-dateutil
+six==1.12.0               # via django-anymail, django-extensions, elasticsearch-dsl, python-dateutil
 urllib3==1.25.6           # via elasticsearch, requests

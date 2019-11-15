@@ -1,6 +1,7 @@
 django==2.1.*
 django-extensions
 django-configurations
+django-anymail[mailjet]
 django-dotenv
 djangorestframework
 djangorestframework_simplejwt

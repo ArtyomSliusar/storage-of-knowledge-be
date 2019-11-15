@@ -74,6 +74,7 @@ class Settings(Configuration):
         'django.contrib.messages',
         'django.contrib.staticfiles',
         # Third party
+        'anymail',
         'django_extensions',
         'django_elasticsearch_dsl',
         'rest_framework',
@@ -150,4 +151,5 @@ class Settings(Configuration):
     USE_I18N = True
     USE_L10N = True
     USE_TZ = True
+    USER_CONFIRMATION_LIFETIME_HOURS = values.FloatValue()
     WSGI_APPLICATION = 'storageofknowledge.wsgi.application'

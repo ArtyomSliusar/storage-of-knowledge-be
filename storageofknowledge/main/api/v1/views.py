@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import ListAPIView, GenericAPIView, ListCreateAPIView, \
     RetrieveUpdateDestroyAPIView, get_object_or_404, DestroyAPIView
@@ -15,9 +16,37 @@ from main.api.permissions import IsCreationOrIsAuthenticated, IsOwnerOrPublicRea
     IsAuthenticatedAndIsOwner
 from main.api.serializers import SubjectSerializer, UserSerializer, RefreshTokenSerializer, ContactSerializer, \
     NoteListSerializer, LinkListSerializer, SuggestionsSerializer, NoteSerializer, LinkSerializer, \
-    NoteLikeSerializer, LinkLikeSerializer, NoteCommentSerializer, CustomTokenObtainPairSerializer
+    NoteLikeSerializer, LinkLikeSerializer, NoteCommentSerializer, CustomTokenObtainPairSerializer, \
+    UserConfirmationSerializer, UserActivateSerializer, UserPasswordResetSerializer
 from main.documents import NoteDocument, LinkDocument, INDEX_DOCUMENT_MAP
 from main.models import Subject, Note, Link, NoteLike, LinkLike, NoteComment
+
+
+class UserActionsViewSet(ViewSet):
+    """
+    """
+    permission_classes = [AllowAny]
+
+    @action(methods=['post'], detail=True)
+    def send_confirmation(self, request, *args, **kwargs):
+        serializer = UserConfirmationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
+
+    @action(methods=['post'], detail=True)
+    def reset_password(self, request, *args, **kwargs):
+        serializer = UserPasswordResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
+
+    @action(methods=['post'], detail=True)
+    def activate(self, request, *args, **kwargs):
+        serializer = UserActivateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
 
 
 class UserViewSet(ViewSet):

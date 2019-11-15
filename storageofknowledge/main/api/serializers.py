@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.mail import mail_admins
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from main.models import Subject, Note, Link, NoteLike, LinkLike, NoteComment
+from main.models import Subject, Note, Link, NoteLike, LinkLike, NoteComment, UserConfirmationType
 from django.utils.text import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
@@ -37,6 +37,23 @@ def _validate_recaptcha(value):
     raise serializers.ValidationError("recaptcha validation error")
 
 
+class UsernameEmail(serializers.Field):
+    """
+    """
+    def to_internal_value(self, data):
+        return UserModel.objects.get_by_username_or_email(data)
+
+
+class ConfirmationType(serializers.Field):
+    """
+    """
+    def to_internal_value(self, data):
+        try:
+            return UserConfirmationType.__getattr__(data.upper())
+        except AttributeError:
+            raise serializers.ValidationError()
+
+
 class ContactSerializer(serializers.Serializer):
     name = serializers.CharField()
     email = serializers.EmailField()
@@ -62,6 +79,53 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token['time_zone'] = user.time_zone
         return token
+
+
+class UserActivateSerializer(serializers.Serializer):
+    username_email = UsernameEmail()
+    activation_code = serializers.CharField()
+
+    default_error_messages = {
+        'incorrect_user_code': 'User not found or invalid/expired code provided',
+    }
+
+    def save(self):
+        user = self.validated_data['username_email']
+        activation_code = self.validated_data['activation_code']
+        if not user or user.activate(activation_code) is False:
+            self.fail('incorrect_user_code')
+
+
+class UserPasswordResetSerializer(serializers.Serializer):
+    username_email = UsernameEmail()
+    new_password = serializers.CharField(write_only=True)
+    reset_password_code = serializers.CharField()
+
+    default_error_messages = {
+        'incorrect_user_code': 'User not found or invalid/expired code provided',
+    }
+
+    def save(self):
+        user = self.validated_data['username_email']
+        new_password = self.validated_data['new_password']
+        reset_password_code = self.validated_data['reset_password_code']
+        if not user or user.reset_password(new_password, reset_password_code) is False:
+            self.fail('incorrect_user_code')
+
+
+class UserConfirmationSerializer(serializers.Serializer):
+    username_email = UsernameEmail()
+    type = ConfirmationType()
+    recaptcha = serializers.CharField()
+
+    def validate_recaptcha(self, value):
+        return _validate_recaptcha(value)
+
+    def save(self):
+        user = self.validated_data['username_email']
+        confirmation_type = self.validated_data['type']
+        if user:
+            user.send_confirmation(confirmation_type)
 
 
 class RefreshTokenSerializer(serializers.Serializer):
@@ -230,7 +294,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop("recaptcha")
-        user = UserModel.objects.create_user(**validated_data)
+        user = UserModel.objects.create_user(**validated_data, is_active=False)
+        user.send_confirmation(UserConfirmationType.ACTIVATION)
         return user
 
     class Meta:

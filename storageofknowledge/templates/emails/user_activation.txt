@@ -1,0 +1,3 @@
+Please, use this secret key: {{secret}} in order to activate your user account.
+
+Secret key is valid for {{lifetime}} hours.

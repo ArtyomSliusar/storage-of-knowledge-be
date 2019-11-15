@@ -7,6 +7,7 @@ from .views import *
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 
+
 urlpatterns = [
     path('notes/<note_id>/comments/<id>', NoteCommentView.as_view(), name='note-comment-instance'),
     path('links/<link_id>/likes/<id>', LinkLikeView.as_view(), name='link-like-instance'),
@@ -21,6 +22,9 @@ urlpatterns = [
     path('links/', LinkCollectionView.as_view(), name='links-collection'),
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('user-activate/', UserActionsViewSet.as_view({'post': 'activate'}), name='user-activate'),
+    path('user-send-confirmation/', UserActionsViewSet.as_view({'post': 'send_confirmation'}), name='user-send-confirmation'),
+    path('user-reset-password/', UserActionsViewSet.as_view({'post': 'reset_password'}), name='user-reset-password'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('contact/', ContactView.as_view(), name='contact'),
     path('suggestions/', Suggestions.as_view(), name='suggestions'),

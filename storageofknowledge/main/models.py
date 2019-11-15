@@ -1,11 +1,17 @@
 import uuid
+from enum import Enum
+from typing import Optional
+from django.template import loader
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
 from django.db import models
 from django.db.models import Q
-
+from django.db import transaction
+from django.utils import timezone
+from main.utils import get_random_key
 from main.validators import validate_time_zone
 from django.utils.translation import gettext_lazy as _
 
@@ -50,6 +56,9 @@ class UserManager(BaseUserManager):
 
         return self._create_user(username, email, password, **extra_fields)
 
+    def get_by_username_or_email(self, value: str) -> Optional["User"]:
+        return self.filter(Q(username=value) | Q(email=value)).first()
+
 
 class User(AbstractUser):
     """
@@ -67,6 +76,93 @@ class User(AbstractUser):
     @property
     def available_links(self):
         return Link.objects.filter(Q(user=self, private=True) | Q(private=False))
+
+    def activate(self, confirmation_key: str) -> bool:
+        try:
+            confirmation = self.confirmations.get(type=UserConfirmationType.ACTIVATION.name)
+            self.is_active = True
+            confirmation.confirm_user_update(confirmation_key)
+        except (UserConfirmation.DoesNotExist, AssertionError):
+            return False
+        else:
+            return True
+
+    def reset_password(self, new_password, confirmation_key: str) -> bool:
+        try:
+            confirmation = self.confirmations.get(type=UserConfirmationType.PASSWORD_RESET.name)
+            self.set_password(new_password)
+            confirmation.confirm_user_update(confirmation_key)
+        except (UserConfirmation.DoesNotExist, AssertionError):
+            return False
+        else:
+            return True
+
+    def send_confirmation(self, confirmation_type: "UserConfirmationType"):
+        confirmation = UserConfirmation.objects.create_confirmation(self, confirmation_type.name)
+        values = {
+            'lifetime': int(settings.USER_CONFIRMATION_LIFETIME_HOURS),
+            'secret': confirmation.secret_key
+        }
+        subject = confirmation_type.get_email_subject()
+        message = confirmation_type.get_email_message(**values)
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.email])
+
+
+class UserConfirmationType(Enum):
+    ACTIVATION = {
+        'subject': "Email confirmation",
+        'template': 'user_activation.txt'
+    }
+    PASSWORD_RESET = {
+        'subject': "Password reset confirmation",
+        'template': 'user_password_reset.txt'
+    }
+
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.name.lower()) for i in cls)
+
+    def get_email_subject(self, *args, **kwargs):
+        return self.value['subject']
+
+    def get_email_message(self, *args, **kwargs):
+        return loader.render_to_string(
+            'emails/{}'.format(self.value['template']),
+            kwargs
+        )
+
+
+class UserConfirmationManager(models.Manager):
+
+    def create_confirmation(self, user: User, confirmation_type: str) -> "UserConfirmation":
+        confirmation, created = self.get_or_create(user=user, type=confirmation_type)
+        if created is False:
+            # just update secret key and timestamp
+            confirmation.secret_key = get_random_key()
+            confirmation.save()
+        return confirmation
+
+
+class UserConfirmation(models.Model):
+    """For email and reset password confirmations"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='confirmations')
+    secret_key = models.CharField(max_length=255, default=get_random_key)
+    type = models.CharField(max_length=255, choices=UserConfirmationType.choices())
+    date_created = models.DateTimeField(auto_now=True)
+    objects = UserConfirmationManager()
+
+    class Meta:
+        db_table = "user_confirmation"
+        unique_together = (
+            ('user', 'type'),
+        )
+
+    def confirm_user_update(self, confirmation_key: str):
+        assert self.secret_key == confirmation_key
+        assert timezone.now() < self.date_created + timezone.timedelta(hours=settings.USER_CONFIRMATION_LIFETIME_HOURS)
+        with transaction.atomic():
+            self.user.save()
+            self.delete()
 
 
 class Subject(models.Model):
