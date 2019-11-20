@@ -37,6 +37,13 @@ def _validate_recaptcha(value):
     raise serializers.ValidationError("recaptcha validation error")
 
 
+def _get_item_author(item):
+    return {
+        "id": item.user.id,
+        "username": item.user.username,
+    }
+
+
 class UsernameEmail(serializers.Field):
     """
     """
@@ -150,7 +157,7 @@ class RecursiveField(serializers.Serializer):
 
 
 class NoteCommentSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())  # get current authenticated user
     username = serializers.CharField(source='user.username', read_only=True)
     reply_set = RecursiveField(many=True, read_only=True)
 
@@ -206,8 +213,8 @@ class SubjectSerializer(serializers.ModelSerializer):
 
 
 class NoteListSerializer(serializers.ModelSerializer):
-    subjects = serializers.SlugRelatedField(many=True, slug_field='name', read_only=True)
-    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    subjects = SubjectSerializer(many=True, read_only=True)
+    author = serializers.SerializerMethodField()
     likes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -217,17 +224,21 @@ class NoteListSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'subjects',
-            'user',
+            'author',
             'private',
             'likes_count',
             'date_modified'
         )
 
+    def get_author(self, obj):
+        return _get_item_author(obj)
+
 
 class NoteSerializer(serializers.ModelSerializer):
-    subjects = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Subject.objects.all())
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    username = serializers.CharField(source='user.username', read_only=True)
+    subjects = SubjectSerializer(many=True, read_only=True)
+    subjects_ids = serializers.PrimaryKeyRelatedField(many=True, write_only=True, source='subjects', queryset=Subject.objects.all())
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())  # get current authenticated user
+    author = serializers.SerializerMethodField()
 
     class Meta:
         ref_name = "Note"
@@ -237,17 +248,21 @@ class NoteSerializer(serializers.ModelSerializer):
             'title',
             'body',
             'subjects',
+            'subjects_ids',
             'user',
-            'username',
+            'author',
             'private',
             'date_created',
             'date_modified'
         )
 
+    def get_author(self, obj):
+        return _get_item_author(obj)
+
 
 class LinkListSerializer(serializers.ModelSerializer):
-    subjects = serializers.SlugRelatedField(many=True, slug_field='name', read_only=True)
-    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    subjects = SubjectSerializer(many=True, read_only=True)
+    author = serializers.SerializerMethodField()
     likes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -257,17 +272,21 @@ class LinkListSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'subjects',
-            'user',
+            'author',
             'private',
             'likes_count',
             'date_modified'
         )
 
+    def get_author(self, obj):
+        return _get_item_author(obj)
+
 
 class LinkSerializer(serializers.ModelSerializer):
-    subjects = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Subject.objects.all())
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    username = serializers.CharField(source='user.username', read_only=True)
+    subjects = SubjectSerializer(many=True, read_only=True)
+    subjects_ids = serializers.PrimaryKeyRelatedField(many=True, write_only=True, source='subjects', queryset=Subject.objects.all())
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())  # get current authenticated user
+    author = serializers.SerializerMethodField()
 
     class Meta:
         ref_name = "Link"
@@ -277,12 +296,16 @@ class LinkSerializer(serializers.ModelSerializer):
             'title',
             'link',
             'subjects',
+            'subjects_ids',
             'user',
-            'username',
+            'author',
             'private',
             'date_created',
             'date_modified'
         )
+
+    def get_author(self, obj):
+        return _get_item_author(obj)
 
 
 class UserSerializer(serializers.ModelSerializer):

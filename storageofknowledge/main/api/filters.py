@@ -4,9 +4,9 @@ from main.models import Note, Link, NoteLike, LinkLike
 
 def filter_subjects(queryset, name, value):
     if value.startswith('in:'):
-        qs = queryset.filter(subjects__name__in=value.lstrip('in:').split(','))
+        qs = queryset.filter(subjects__id__in=value.lstrip('in:').split(','))
     else:
-        qs = queryset.filter(subjects__name=value)
+        qs = queryset.filter(subjects__id=value)
     return qs
 
 
