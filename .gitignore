@@ -114,3 +114,7 @@ ENV/
 
 # media
 media/
+
+# local logging configurations except templates
+storageofknowledge/logging/*
+!storageofknowledge/logging/template.*

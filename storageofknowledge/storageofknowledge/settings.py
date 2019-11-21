@@ -49,7 +49,7 @@ class Settings(Configuration):
     DATABASES = values.DatabaseURLValue(environ_prefix='DJANGO')
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = values.BooleanValue(False)
-    DEFAULT_FROM_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
+    DEFAULT_FROM_EMAIL = values.Value()
     ELASTICSEARCH_HOST = values.Value()
     @property
     def ELASTICSEARCH_DSL(self):
@@ -104,7 +104,6 @@ class Settings(Configuration):
         'DEFAULT_AUTHENTICATION_CLASSES': (
             'rest_framework_simplejwt.authentication.JWTAuthentication',
         ),
-        'PAGE_SIZE': 50,
         'DEFAULT_PERMISSION_CLASSES': (
             'rest_framework.permissions.IsAuthenticated',
         ),
@@ -115,7 +114,7 @@ class Settings(Configuration):
     }
     ROOT_URLCONF = 'storageofknowledge.urls'
     SECRET_KEY = values.SecretValue()
-    SERVER_EMAIL = 'StorageOfKnowledge <noreply@storageofknowledge.com>'
+    SERVER_EMAIL = values.Value()
     SESSION_COOKIE_AGE = values.IntegerValue(5 * 60)  # 5 minutes
     SESSION_SAVE_EVERY_REQUEST = values.BooleanValue(True)
     @property

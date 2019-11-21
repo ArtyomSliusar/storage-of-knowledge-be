@@ -1,15 +1,29 @@
-FROM mysql:5.6
+# docker build -f Dockerfile ./ -t storage-of-knowledge-be:01
+# docker run -ti --rm storage-of-knowledge-be:01 bash
+# docker run --rm --network="host" -v $(pwd)/.env:/app/storageofknowledge/.env -v $(pwd)/logging/develop.json:/app/storageofknowledge/logging/develop.json storage-of-knowledge-be:01
 
-ADD old_dump.sql /docker-entrypoint-initdb.d/dump.sql
+FROM python:3.6-slim
+ENV PYTHONUNBUFFERED 1
+MAINTAINER artyomsliusar@gmail.com
 
-# docker build -f Dockerfile ./ -t dump-mysql:1
-# docker run --name dump-mysql --rm -d -p 3307:3306 -e MYSQL_DATABASE=storageofknowledge -e MYSQL_ROOT_PASSWORD=password dump-mysql:1
+RUN useradd -ms /bin/bash service-user
+COPY ./requirements.txt /app/requirements.txt
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends default-libmysqlclient-dev gcc \
+	&& pip install --upgrade pip setuptools \
+	&& pip install -r /app/requirements.txt \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& apt-get purge -y --auto-remove gcc
 
-# docker run --name mysql -d -p 3306:3306 -e MYSQL_DATABASE=storageofknowledge -e MYSQL_ROOT_PASSWORD=password mysql:5.7 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+COPY ./ /app/
+RUN mkdir /static_root
 
-# backup DB
-# docker exec CONTAINER /usr/bin/mysqldump -u root --password=root DATABASE > backup.sql
+WORKDIR /app/storageofknowledge
 
-# restore from backup
-# docker run --name backup-mysql --rm -d -p 3307:3306 -e MYSQL_DATABASE=storageofknowledge_backup -e MYSQL_ROOT_PASSWORD=password mysql:5.7
-# cat backup.sql | docker exec -i CONTAINER /usr/bin/mysql -u root --password=root DATABASE
+RUN DJANGO_STATIC_ROOT=/static_root/static DJANGO_SECRET_KEY=x DJANGO_RECAPTCHA_PRIVATE_KEY=x DJANGO_ACCESS_TOKEN_LIFETIME_MINUTES=0 python -W 'ignore:Not reading .env' manage.py collectstatic --noinput
+
+RUN chown -R service-user:service-user /app
+EXPOSE 8000
+USER service-user
+
+CMD ["python", "manage.py", "runserver", "127.0.0.1:8000"]

@@ -59,6 +59,7 @@ http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supe
 
 TODO:
 - tests
+- api documentation
 - multiplex requests to get note, its comments and likes
 - flatten data in store
 - add client-side encryption
