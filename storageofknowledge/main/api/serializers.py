@@ -93,7 +93,7 @@ class UserActivateSerializer(serializers.Serializer):
     activation_code = serializers.CharField()
 
     default_error_messages = {
-        'incorrect_user_code': 'User not found or invalid/expired code provided',
+        'incorrect_user_code': _('User not found or invalid/expired code provided'),
     }
 
     def save(self):
@@ -109,7 +109,7 @@ class UserPasswordResetSerializer(serializers.Serializer):
     reset_password_code = serializers.CharField()
 
     default_error_messages = {
-        'incorrect_user_code': 'User not found or invalid/expired code provided',
+        'incorrect_user_code': _('User not found or invalid/expired code provided'),
     }
 
     def save(self):
@@ -138,7 +138,6 @@ class UserConfirmationSerializer(serializers.Serializer):
 class RefreshTokenSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
-    # TODO: correspond to JWT package errors
     default_error_messages = {
         'bad_token': _('Refresh token is invalid or expired')
     }

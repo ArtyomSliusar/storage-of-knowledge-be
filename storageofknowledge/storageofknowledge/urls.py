@@ -9,5 +9,4 @@ admin.site.site_title = 'Storage Of Knowledge'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include("main.api.urls")),
-    path('', include('main.urls')),
 ]
