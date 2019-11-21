@@ -56,3 +56,19 @@ python manage.py runserver
 ```
 http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/
 ```
+
+TODO:
+- tests
+- multiplex requests to get note, its comments and likes
+- flatten data in store
+- add client-side encryption
+- fix `history.goBack()` goes out of the website
+- use UUID for user
+- add language field
+- make mobile header fixed
+- use FE badges for private/public info
+- add site monitoring and statistics solution
+- email user, if somebody has commented his/her note
+- social networks integration
+- private cabinet with delete account option
+- add popup for not logged in users (describe functionality)
