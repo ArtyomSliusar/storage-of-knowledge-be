@@ -57,8 +57,12 @@ python manage.py runserver
 http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/
 ```
 
+ENVIRONMENTS:
+...
+
 TODO:
 - tests
+- use ssr
 - api documentation
 - multiplex requests to get note, its comments and likes
 - flatten data in store

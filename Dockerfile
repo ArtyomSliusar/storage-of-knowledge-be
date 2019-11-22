@@ -1,6 +1,13 @@
 # docker build -f Dockerfile ./ -t storage-of-knowledge-be:01
 # docker run -ti --rm storage-of-knowledge-be:01 bash
-# docker run --rm --network="host" -v $(pwd)/.env:/app/storageofknowledge/.env -v $(pwd)/logging/develop.json:/app/storageofknowledge/logging/develop.json storage-of-knowledge-be:01
+# docker run --rm --network="host" \
+#	-v $(pwd)/storageofknowledge/.env:/app/storageofknowledge/.env \
+#	-v $(pwd)/storageofknowledge/logging/develop.json:/app/storageofknowledge/logging/develop.json \
+# 	storage-of-knowledge-be:01
+# docker run --rm --network="host" \
+#	-v $(pwd)/storageofknowledge/.env:/app/storageofknowledge/.env \
+#	-v $(pwd)/storageofknowledge/logging/develop.json:/app/storageofknowledge/logging/develop.json \
+# 	storage-of-knowledge-be:01 gunicorn storageofknowledge.wsgi --log-file=- --log-level=debug
 
 FROM python:3.6-slim
 ENV PYTHONUNBUFFERED 1
@@ -20,7 +27,11 @@ RUN mkdir /static_root
 
 WORKDIR /app/storageofknowledge
 
-RUN DJANGO_STATIC_ROOT=/static_root/static DJANGO_SECRET_KEY=x DJANGO_RECAPTCHA_PRIVATE_KEY=x DJANGO_ACCESS_TOKEN_LIFETIME_MINUTES=0 python -W 'ignore:Not reading .env' manage.py collectstatic --noinput
+RUN DJANGO_STATIC_ROOT=/static_root/static \
+	DJANGO_SECRET_KEY=x \
+	DJANGO_RECAPTCHA_PRIVATE_KEY=x \
+	DJANGO_ACCESS_TOKEN_LIFETIME_MINUTES=0 \
+	python -W 'ignore:Not reading .env' manage.py collectstatic --noinput
 
 RUN chown -R service-user:service-user /app
 EXPOSE 8000
