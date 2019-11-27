@@ -28,3 +28,4 @@ pytz==2019.2
 requests==2.22.0
 six==1.12.0               # via django-anymail, django-extensions, elasticsearch-dsl, python-dateutil
 urllib3==1.25.6           # via elasticsearch, requests
+whitenoise==4.1.4

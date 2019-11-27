@@ -1,13 +1,9 @@
-# docker build -f Dockerfile ./ -t storage-of-knowledge-be:01
-# docker run -ti --rm storage-of-knowledge-be:01 bash
+# docker build -f Dockerfile ./ -t artyomsliusar/storage-of-knowledge-be:01
+# docker run -ti --rm --entrypoint=/bin/bash artyomsliusar/storage-of-knowledge-be:01
 # docker run --rm --network="host" \
-#	-v $(pwd)/storageofknowledge/.env:/app/storageofknowledge/.env \
+#	--env-file $(pwd)/storageofknowledge/.env \
 #	-v $(pwd)/storageofknowledge/logging/develop.json:/app/storageofknowledge/logging/develop.json \
-# 	storage-of-knowledge-be:01
-# docker run --rm --network="host" \
-#	-v $(pwd)/storageofknowledge/.env:/app/storageofknowledge/.env \
-#	-v $(pwd)/storageofknowledge/logging/develop.json:/app/storageofknowledge/logging/develop.json \
-# 	storage-of-knowledge-be:01 gunicorn storageofknowledge.wsgi --log-file=- --log-level=debug
+# 	artyomsliusar/storage-of-knowledge-be:01
 
 FROM python:3.6-slim
 ENV PYTHONUNBUFFERED 1
@@ -26,15 +22,11 @@ COPY ./ /app/
 RUN mkdir /static_root
 
 WORKDIR /app/storageofknowledge
-
-RUN DJANGO_STATIC_ROOT=/static_root/static \
-	DJANGO_SECRET_KEY=x \
-	DJANGO_RECAPTCHA_PRIVATE_KEY=x \
-	DJANGO_ACCESS_TOKEN_LIFETIME_MINUTES=0 \
-	python -W 'ignore:Not reading .env' manage.py collectstatic --noinput
+COPY docker-entrypoint.sh wait-for-it.sh ./
+RUN chmod +x wait-for-it.sh docker-entrypoint.sh
 
 RUN chown -R service-user:service-user /app
-EXPOSE 8000
 USER service-user
 
-CMD ["python", "manage.py", "runserver", "127.0.0.1:8000"]
+EXPOSE 8000
+ENTRYPOINT ["./docker-entrypoint.sh"]

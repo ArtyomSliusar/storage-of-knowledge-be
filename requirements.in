@@ -14,3 +14,4 @@ pytz
 requests
 gunicorn
 mysqlclient
+whitenoise

@@ -46,17 +46,36 @@ class Settings(Configuration):
     ]
     AUTH_USER_MODEL = "main.User"
     CORS_ORIGIN_WHITELIST = values.ListValue([])
-    DATABASES = values.DatabaseURLValue(environ_prefix='DJANGO')
+    DATABASE_ENGINE = values.Value(environ_required=True)
+    DATABASE_NAME = values.Value(environ_required=True)
+    DATABASE_USER = values.Value()
+    DATABASE_PASSWORD = values.Value()
+    DATABASE_HOST = values.Value()
+    DATABASE_PORT = values.Value()
+    @property
+    def DATABASES(self):
+        return {
+            'default': {
+                'ENGINE': self.DATABASE_ENGINE,
+                'NAME': self.DATABASE_NAME,
+                'USER': self.DATABASE_USER,
+                'PASSWORD': self.DATABASE_PASSWORD,
+                'HOST': self.DATABASE_HOST,
+                'PORT': self.DATABASE_PORT,
+            }
+        }
+
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = values.BooleanValue(False)
     DEFAULT_FROM_EMAIL = values.Value()
     ELASTICSEARCH_HOST = values.Value()
+    ELASTICSEARCH_PORT = values.Value()
     @property
     def ELASTICSEARCH_DSL(self):
         # https://django-configurations.readthedocs.io/en/stable/patterns/#property-settings
         return {
             'default': {
-                'hosts': self.ELASTICSEARCH_HOST
+                'hosts': 'http://{}:{}'.format(self.ELASTICSEARCH_HOST, self.ELASTICSEARCH_PORT)
             }
         }
     EMAIL_BACKEND = values.Value()
@@ -88,6 +107,7 @@ class Settings(Configuration):
     LOGGING = logging_config()
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
+        'whitenoise.middleware.WhiteNoiseMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'corsheaders.middleware.CorsMiddleware',
         'django.middleware.common.CommonMiddleware',
@@ -127,6 +147,7 @@ class Settings(Configuration):
     STATIC_ROOT = values.Value(None)
     STATIC_URL = '/static/'
     STATICFILES_DIRS = values.SingleNestedListValue([])
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     TEMPLATES = [
         {
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
