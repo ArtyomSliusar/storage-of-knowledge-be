@@ -1,10 +1,3 @@
-# docker build -f Dockerfile ./ -t artyomsliusar/storage-of-knowledge-be:01
-# docker run -ti --rm --entrypoint=/bin/bash artyomsliusar/storage-of-knowledge-be:01
-# docker run --rm --network="host" \
-#	--env-file $(pwd)/storageofknowledge/.env \
-#	-v $(pwd)/storageofknowledge/logging/develop.json:/app/storageofknowledge/logging/develop.json \
-# 	artyomsliusar/storage-of-knowledge-be:01
-
 FROM python:3.6-slim
 ENV PYTHONUNBUFFERED 1
 MAINTAINER artyomsliusar@gmail.com
