@@ -1,0 +1,12 @@
+# local logs
+**/*.log
+
+# local env
+**/.env
+
+# local logging configurations except templates
+storageofknowledge/logging/*
+!storageofknowledge/logging/template.*
+
+# local static
+static_root
