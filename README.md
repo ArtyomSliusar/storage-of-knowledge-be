@@ -109,14 +109,9 @@ docker run -ti --rm --entrypoint=/bin/bash artyomsliusar/storage-of-knowledge-be
 ```
 
 ### TODO:
-- clear tokens cron
-- correct notes body
-- aws ecs
-- fix cert renew
 - tests
 - api documentation
 - use UUID for user
 - add language field
-- add site monitoring and statistics solution
 - email user, if somebody has commented his/her note
 - social networks integration
