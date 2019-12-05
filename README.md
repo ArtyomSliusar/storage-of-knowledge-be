@@ -59,7 +59,7 @@ use `host` network to connect to host database or Elasticsearch.
 docker run --rm --network="host" \
     --env-file $(pwd)/storageofknowledge/.env \
     -v $(pwd)/storageofknowledge/logging/develop.json:/app/storageofknowledge/logging/develop.json \
-    artyomsliusar/storage-of-knowledge-be:01
+    artyomsliusar/storage-of-knowledge-be:0.1
 ```
 
 You can check https://github.com/ArtyomSliusar/storage-of-knowledge if you want
@@ -98,14 +98,14 @@ Environment variables for configuration:
 
 ### How to
 
-- Build a new docker image
+- Build a new docker image manually
 ```
-docker build -f Dockerfile ./ -t artyomsliusar/storage-of-knowledge-be:01
+docker build -f Dockerfile ./ -t artyomsliusar/storage-of-knowledge-be:0.1
 ```
 
 - Run `bash` inside a new docker container
 ```
-docker run -ti --rm --entrypoint=/bin/bash artyomsliusar/storage-of-knowledge-be:01
+docker run -ti --rm --entrypoint=/bin/bash artyomsliusar/storage-of-knowledge-be:0.1
 ```
 
 ### TODO:
