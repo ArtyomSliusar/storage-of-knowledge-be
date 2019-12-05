@@ -16,10 +16,15 @@ mobile clients.
 
 #### on-premise
 
+- Install build dependencies for mysql client
+```
+sudo apt-get install default-libmysqlclient-dev gcc
+```
+
 - Create and activate virtual environment
 ```
-virtualenv venv
-source venv/bin/activate
+python3.6 -m venv stofkn-venv
+source stofkn-venv/bin/activate
 ```
 
 - Install requirements
@@ -27,7 +32,9 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-- Create .env file in StorageOfKnowledge/storageofknowledge (use example.env)
+- Create .env file in storageofknowledge folder (use example.env)
+
+- Create logging configuration file (use storageofknowledge/logging templates)
 
 - Run migrations
 ```
@@ -46,8 +53,8 @@ python manage.py runserver
 
 #### docker
 
-- Run a new container, with `.env` file and logging configuration, use `host`
-network to connect host database or Elasticsearch.
+- Run a new container, with `.env` file and `develop.json` logging configuration, 
+use `host` network to connect to host database or Elasticsearch.
 ```
 docker run --rm --network="host" \
     --env-file $(pwd)/storageofknowledge/.env \
@@ -56,38 +63,38 @@ docker run --rm --network="host" \
 ```
 
 You can check https://github.com/ArtyomSliusar/storage-of-knowledge if you want
-to run this application with all dependencies from scratch.
+to run this application with all dependencies included.
 
 ### Configuration
 
 Environment variables for configuration:
 
-- DJANGO_ANYMAIL - 
-- DJANGO_ACCESS_TOKEN_LIFETIME_MINUTES - 
-- DJANGO_ADMINS - 
-- DJANGO_ADMIN_HEADER_COLOR - 
-- DJANGO_ADMIN_HEADER_TITLE - 
-- DJANGO_ALLOWED_HOSTS - 
-- DJANGO_CORS_ORIGIN_WHITELIST -
-- DJANGO_DATABASE_ENGINE -
-- DJANGO_DATABASE_NAME -
-- DJANGO_DATABASE_USER -
-- DJANGO_DATABASE_PASSWORD -
-- DJANGO_DATABASE_HOST -
-- DJANGO_DATABASE_PORT -
-- DJANGO_DEBUG -
-- DJANGO_DEFAULT_FROM_EMAIL -
-- DJANGO_ELASTICSEARCH_HOST -
-- DJANGO_ELASTICSEARCH_PORT -
-- DJANGO_EMAIL_BACKEND -
-- DJANGO_ENVIRONMENT -
-- DJANGO_LOGGING_CONFIG_FILE -
-- DJANGO_RECAPTCHA_PRIVATE_KEY -
-- DJANGO_RECAPTCHA_URL -
-- DJANGO_SECRET_KEY -
-- DJANGO_SERVER_EMAIL -
-- DJANGO_STATIC_ROOT -
-- DJANGO_USER_CONFIRMATION_LIFETIME_HOURS -
+- DJANGO_ANYMAIL - anymail configuration settings (https://github.com/anymail/django-anymail)
+- DJANGO_ACCESS_TOKEN_LIFETIME_MINUTES - JWT access token lifetime in minutes 
+- DJANGO_ADMINS - application admins
+- DJANGO_ADMIN_HEADER_COLOR - admin page header color
+- DJANGO_ADMIN_HEADER_TITLE - admin page header title
+- DJANGO_ALLOWED_HOSTS - https://docs.djangoproject.com/en/2.1/ref/settings/#allowed-hosts
+- DJANGO_CORS_ORIGIN_WHITELIST - https://github.com/adamchainz/django-cors-headers#cors_origin_whitelist
+- DJANGO_DATABASE_ENGINE - https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+- DJANGO_DATABASE_NAME - database name
+- DJANGO_DATABASE_USER - database user
+- DJANGO_DATABASE_PASSWORD - database password
+- DJANGO_DATABASE_HOST - database host
+- DJANGO_DATABASE_PORT - database port
+- DJANGO_DEBUG - https://docs.djangoproject.com/en/2.1/ref/settings/#debug
+- DJANGO_DEFAULT_FROM_EMAIL - https://docs.djangoproject.com/en/2.1/ref/settings/#default-from-email
+- DJANGO_ELASTICSEARCH_HOST - elasticsearch host
+- DJANGO_ELASTICSEARCH_PORT - elasticsearch port
+- DJANGO_EMAIL_BACKEND - https://docs.djangoproject.com/en/2.1/ref/settings/#email-backend
+- DJANGO_ENVIRONMENT - environment name (will be displayed in admin page header)
+- DJANGO_LOGGING_CONFIG_FILE - relative path to logging configuration file
+- DJANGO_RECAPTCHA_PRIVATE_KEY - google recaptcha private key
+- DJANGO_RECAPTCHA_URL - google recaptcha url
+- DJANGO_SECRET_KEY - site secret key
+- DJANGO_SERVER_EMAIL - https://docs.djangoproject.com/en/2.1/ref/settings/#server-email
+- DJANGO_STATIC_ROOT - relative path for static files
+- DJANGO_USER_CONFIRMATION_LIFETIME_HOURS - confirmation token lifetime in hours
 
 ### How to
 
@@ -102,23 +109,14 @@ docker run -ti --rm --entrypoint=/bin/bash artyomsliusar/storage-of-knowledge-be
 ```
 
 ### TODO:
-- clear tokens/confirmations cron
+- clear tokens cron
 - correct notes body
 - aws ecs
 - fix cert renew
 - tests
-- use ssr
 - api documentation
-- multiplex requests to get note, its comments and likes
-- flatten data in store
-- add client-side encryption
-- fix `history.goBack()` goes out of the website
 - use UUID for user
 - add language field
-- make mobile header fixed
-- use FE badges for private/public info
 - add site monitoring and statistics solution
 - email user, if somebody has commented his/her note
 - social networks integration
-- private cabinet with delete account option
-- add popup for not logged in users (describe functionality)
