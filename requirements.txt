@@ -4,29 +4,76 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
-certifi==2019.9.11        # via requests
-chardet==3.0.4            # via requests
+certifi==2019.9.11
+    # via requests
+chardet==3.0.4
+    # via requests
 dj-database-url==0.5.0
+    # via -r requirements.in
 django-anymail[mailjet]==7.0.0
+    # via -r requirements.in
 django-configurations==2.1
+    # via -r requirements.in
 django-cors-headers==3.1.0
+    # via -r requirements.in
 django-dotenv==1.4.2
+    # via -r requirements.in
 django-elasticsearch-dsl==7.0.0
+    # via -r requirements.in
 django-extensions==2.2.1
+    # via -r requirements.in
 django-filter==2.2.0
-django==2.1.11
+    # via -r requirements.in
+django==2.2.24
+    # via
+    #   -r requirements.in
+    #   django-anymail
+    #   django-cors-headers
+    #   django-filter
+    #   djangorestframework-simplejwt
 djangorestframework-simplejwt==4.3.0
+    # via -r requirements.in
 djangorestframework==3.10.2
+    # via
+    #   -r requirements.in
+    #   djangorestframework-simplejwt
 elasticsearch-dsl==7.1.0
-elasticsearch==7.0.5      # via elasticsearch-dsl
+    # via
+    #   -r requirements.in
+    #   django-elasticsearch-dsl
+elasticsearch==7.0.5
+    # via elasticsearch-dsl
 gunicorn==19.9.0
-idna==2.8                 # via requests
+    # via -r requirements.in
+idna==2.8
+    # via requests
 mysqlclient==1.4.2.post1
-pyjwt==1.7.1              # via djangorestframework-simplejwt
-python-dateutil==2.8.0    # via elasticsearch-dsl
+    # via -r requirements.in
+pyjwt==1.7.1
+    # via djangorestframework-simplejwt
+python-dateutil==2.8.0
+    # via elasticsearch-dsl
 pytz==2019.2
+    # via
+    #   -r requirements.in
+    #   django
 requests==2.22.0
-six==1.12.0               # via django-anymail, django-extensions, elasticsearch-dsl, python-dateutil
-urllib3==1.25.6           # via elasticsearch, requests
+    # via
+    #   -r requirements.in
+    #   django-anymail
+six==1.12.0
+    # via
+    #   django-anymail
+    #   django-extensions
+    #   elasticsearch-dsl
+    #   python-dateutil
+sqlparse==0.4.1
+    # via django
+urllib3==1.25.6
+    # via
+    #   elasticsearch
+    #   requests
 wheel==0.33.6
+    # via -r requirements.in
 whitenoise==4.1.4
+    # via -r requirements.in
